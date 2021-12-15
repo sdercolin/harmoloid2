@@ -5,8 +5,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.browser.document
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import mainScope
 import org.w3c.dom.HTMLInputElement
 import org.w3c.files.File
 import org.w3c.files.FileList
@@ -57,7 +57,7 @@ suspend fun File.readText(encoding: String? = null): String = suspendCoroutine {
 suspend fun File.readBinary() = suspendCoroutine<Array<Byte>> { cont ->
     val fileReader = FileReader()
     fileReader.onloadend = {
-        GlobalScope.launch {
+        mainScope.launch {
             cont.resume(fileReader.result)
         }
     }

@@ -9,7 +9,6 @@ import com.sdercolin.harmoloid.core.model.Tonality
 import com.sdercolin.harmoloid.core.model.Track
 import com.sdercolin.harmoloid.core.model.TrackTonalityAnalysisResult
 import com.sdercolin.harmoloid.core.util.update
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.css.Align
 import kotlinx.css.Display
@@ -20,6 +19,7 @@ import kotlinx.css.marginBottom
 import kotlinx.css.marginLeft
 import kotlinx.css.marginRight
 import kotlinx.css.marginTop
+import mainScope
 import model.ExportResult
 import model.Project
 import react.Props
@@ -63,7 +63,7 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
 
     fun export() {
         setState { isProcessing = true }
-        GlobalScope.launch {
+        mainScope.launch {
             try {
                 val exportProject = props.project.copy(
                     content = core.content,

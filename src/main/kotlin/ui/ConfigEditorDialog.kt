@@ -5,10 +5,10 @@ import com.sdercolin.harmoloid.core.model.Solfege
 import external.saveAs
 import io.ConfigJson
 import kotlinx.browser.window
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.css.LinearDimension
 import kotlinx.css.margin
+import mainScope
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import react.Props
@@ -452,7 +452,7 @@ private fun downloadConfigFile(state: ConfigState) {
 }
 
 private fun uploadConfigFile(onChangeState: StateSetter<ConfigState>) {
-    GlobalScope.launch {
+    mainScope.launch {
         val file = waitFileSelection(accept = "json", multiple = false).firstOrNull() ?: return@launch
         val content = file.readText()
         val config = ConfigJson.parse(content)

@@ -1,12 +1,12 @@
 package ui
 
 import com.sdercolin.harmoloid.core.exception.NoteOverlappingException
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.css.LinearDimension
 import kotlinx.css.marginTop
 import kotlinx.html.js.onClickFunction
+import mainScope
 import model.Format
 import model.Project
 import org.w3c.files.File
@@ -43,7 +43,7 @@ class Importer : RComponent<ImporterProps, ImporterState>() {
             }
             attrs {
                 onClickFunction = {
-                    GlobalScope.launch {
+                    mainScope.launch {
                         val accept = props.formats.joinToString(",") { it.extension }
                         val files = waitFileSelection(accept = accept, multiple = true)
                         checkFilesToImport(files)
@@ -125,7 +125,7 @@ class Importer : RComponent<ImporterProps, ImporterState>() {
         setState {
             isLoading = true
         }
-        GlobalScope.launch {
+        mainScope.launch {
             try {
                 delay(100)
                 val parseFunction = format.parser

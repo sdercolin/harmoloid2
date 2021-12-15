@@ -1,7 +1,7 @@
 package ui
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import mainScope
 import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
@@ -52,7 +52,7 @@ class LanguageSelector : RComponent<LanguageSelectorProps, LanguageSelectorState
     }
 
     private fun selectLanguage(language: Language) {
-        GlobalScope.launch {
+        mainScope.launch {
             changeLanguage(language.code)
             props.onChangeLanguage()
         }
