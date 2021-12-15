@@ -676,7 +676,8 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
         val harmonies = state.trackCards[trackIndex].track.harmonies.orEmpty()
         state.trackCards.indices.filter { it != trackIndex }.forEach {
             updateTrack(it) { trackCard ->
-                trackCard.copy(track = trackCard.track.copy(harmonies = harmonies))
+                if (trackCard.track.bars.isEmpty()) trackCard
+                else trackCard.copy(track = trackCard.track.copy(harmonies = harmonies))
             }
         }
     }
