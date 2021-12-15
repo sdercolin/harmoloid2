@@ -117,6 +117,7 @@ object Svp {
         val groupElements = projectElement.property("library").asList.toMutableList()
 
         var trackElements = projectElement.property("tracks").asList.toList()
+            .sortedBy { it.maybeProperty("dispOrder")?.asIntOrNull ?: 0 }
         trackElements = trackElements.zip(project.content.tracks).fold(trackElements) { accumulator, item ->
             val (trackElement, trackModel) = item
             val trackChorus = project.chorus[project.content.tracks.indexOf(trackModel)]
