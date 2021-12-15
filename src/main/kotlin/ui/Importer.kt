@@ -2,17 +2,14 @@ package ui
 
 import com.sdercolin.harmoloid.core.exception.NoteOverlappingException
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.css.LinearDimension
 import kotlinx.css.marginTop
 import kotlinx.html.js.onClickFunction
-import mainScope
 import model.Format
 import model.Project
 import org.w3c.files.File
 import react.Props
 import react.RBuilder
-import react.RComponent
 import react.State
 import react.dom.attrs
 import react.setState
@@ -28,7 +25,7 @@ import util.extensionName
 import util.toList
 import util.waitFileSelection
 
-class Importer : RComponent<ImporterProps, ImporterState>() {
+class Importer : CoroutineRComponent<ImporterProps, ImporterState>() {
 
     override fun ImporterState.init() {
         isLoading = false
@@ -43,7 +40,7 @@ class Importer : RComponent<ImporterProps, ImporterState>() {
             }
             attrs {
                 onClickFunction = {
-                    mainScope.launch {
+                    launch {
                         val accept = props.formats.joinToString(",") { it.extension }
                         val files = waitFileSelection(accept = accept, multiple = true)
                         checkFilesToImport(files)
@@ -125,7 +122,7 @@ class Importer : RComponent<ImporterProps, ImporterState>() {
         setState {
             isLoading = true
         }
-        mainScope.launch {
+        launch {
             try {
                 delay(100)
                 val parseFunction = format.parser

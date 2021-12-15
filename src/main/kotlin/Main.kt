@@ -1,5 +1,4 @@
 import kotlinx.browser.document
-import kotlinx.coroutines.MainScope
 import react.dom.render
 import ui.App
 import ui.appThemeOptions
@@ -18,5 +17,3 @@ suspend fun main() {
         }
     }
 }
-
-val mainScope = MainScope()

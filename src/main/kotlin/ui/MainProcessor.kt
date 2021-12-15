@@ -9,7 +9,6 @@ import com.sdercolin.harmoloid.core.model.Tonality
 import com.sdercolin.harmoloid.core.model.Track
 import com.sdercolin.harmoloid.core.model.TrackTonalityAnalysisResult
 import com.sdercolin.harmoloid.core.util.update
-import kotlinx.coroutines.launch
 import kotlinx.css.Align
 import kotlinx.css.Display
 import kotlinx.css.LinearDimension
@@ -19,12 +18,10 @@ import kotlinx.css.marginBottom
 import kotlinx.css.marginLeft
 import kotlinx.css.marginRight
 import kotlinx.css.marginTop
-import mainScope
 import model.ExportResult
 import model.Project
 import react.Props
 import react.RBuilder
-import react.RComponent
 import react.State
 import react.createElement
 import react.setState
@@ -57,13 +54,13 @@ import ui.external.materialui.typography
 import ui.strings.Strings
 import ui.strings.string
 
-class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, MainProcessorState>(props) {
+class MainProcessor(props: MainProcessorProps) : CoroutineRComponent<MainProcessorProps, MainProcessorState>(props) {
 
     private lateinit var core: Core
 
     fun export() {
         setState { isProcessing = true }
-        mainScope.launch {
+        launch {
             try {
                 val exportProject = props.project.copy(
                     content = core.content,
