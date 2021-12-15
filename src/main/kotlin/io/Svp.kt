@@ -145,8 +145,8 @@ object Svp {
         trackChorus: Map<HarmonicType, List<NoteShift>>,
         projectElement: JsonElement
     ): List<Pair<JsonElement, List<JsonElement>>> {
-        if (trackModel.bars.isEmpty()) return listOf(this to listOf())
-        if (trackChorus.isEmpty()) return listOf(this to listOf())
+        if (trackModel.bars.isEmpty()) return listOf()
+        if (trackChorus.isEmpty()) return listOf()
         return trackChorus.map { (harmony, noteShifts) ->
             var newTrackElement = withProperty(
                 "name",
