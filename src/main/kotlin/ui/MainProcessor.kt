@@ -139,55 +139,57 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
                             )
                         }
                     }
-                    cardActions {
-                        button {
-                            attrs {
-                                onClick = {
-                                    val requestedExpanded =
-                                        if (trackState.expanded == Expanded.MarkTonality)
-                                            Expanded.None
-                                        else Expanded.MarkTonality
-                                    toggleCollapse(trackState.index, requestedExpanded)
+                    if (trackState.track.bars.isNotEmpty()) {
+                        cardActions {
+                            button {
+                                attrs {
+                                    onClick = {
+                                        val requestedExpanded =
+                                            if (trackState.expanded == Expanded.MarkTonality)
+                                                Expanded.None
+                                            else Expanded.MarkTonality
+                                        toggleCollapse(trackState.index, requestedExpanded)
+                                    }
+                                }
+                                if (trackState.track.isTonalityMarked) Icons.checkCircle {}
+                                else Icons.edit {}
+                                styledDiv {
+                                    css { marginLeft = LinearDimension("5px") }
+                                    +string(Strings.MarkTonalityButton)
                                 }
                             }
-                            if (trackState.track.isTonalityMarked) Icons.checkCircle {}
-                            else Icons.edit {}
-                            styledDiv {
-                                css { marginLeft = LinearDimension("5px") }
-                                +string(Strings.MarkTonalityButton)
-                            }
-                        }
-                        button {
-                            attrs {
-                                onClick = {
-                                    val requestedExpanded =
-                                        if (trackState.expanded == Expanded.SelectHarmony)
-                                            Expanded.None
-                                        else Expanded.SelectHarmony
-                                    toggleCollapse(trackState.index, requestedExpanded)
+                            button {
+                                attrs {
+                                    onClick = {
+                                        val requestedExpanded =
+                                            if (trackState.expanded == Expanded.SelectHarmony)
+                                                Expanded.None
+                                            else Expanded.SelectHarmony
+                                        toggleCollapse(trackState.index, requestedExpanded)
+                                    }
+                                    disabled = !trackState.track.isTonalityMarked
                                 }
-                                disabled = !trackState.track.isTonalityMarked
-                            }
-                            if (trackState.track.harmonies?.isNotEmpty() == true) Icons.checkCircle {}
-                            else Icons.edit {}
-                            styledDiv {
-                                css { marginLeft = LinearDimension("5px") }
-                                +string(Strings.SelectHarmonyButton)
+                                if (trackState.track.harmonies?.isNotEmpty() == true) Icons.checkCircle {}
+                                else Icons.edit {}
+                                styledDiv {
+                                    css { marginLeft = LinearDimension("5px") }
+                                    +string(Strings.SelectHarmonyButton)
+                                }
                             }
                         }
-                    }
-                    collapse {
-                        attrs {
-                            `in` = trackState.expanded != Expanded.None
-                            unmountOnExit = true
-                        }
-                        when (trackState.expanded) {
-                            Expanded.None -> Unit
-                            Expanded.MarkTonality -> {
-                                buildTonalityMarking(trackState)
+                        collapse {
+                            attrs {
+                                `in` = trackState.expanded != Expanded.None
+                                unmountOnExit = true
                             }
-                            Expanded.SelectHarmony -> {
-                                buildHarmonySelection(trackState)
+                            when (trackState.expanded) {
+                                Expanded.None -> Unit
+                                Expanded.MarkTonality -> {
+                                    buildTonalityMarking(trackState)
+                                }
+                                Expanded.SelectHarmony -> {
+                                    buildHarmonySelection(trackState)
+                                }
                             }
                         }
                     }
