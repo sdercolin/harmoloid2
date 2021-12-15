@@ -669,7 +669,7 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
     }
 
     private fun applySelectedHarmoniesToAllTracks(trackIndex: Int) {
-        if (state.trackCards.any { !it.track.isTonalityMarked }) {
+        if (state.trackCards.any { it.track.bars.isNotEmpty() && !it.track.isTonalityMarked }) {
             showMessageBar(string(Strings.PassageNotSetMessageBar))
             return
         }
