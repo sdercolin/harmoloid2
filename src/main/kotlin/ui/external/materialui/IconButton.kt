@@ -4,14 +4,14 @@
 package ui.external.materialui
 
 import org.w3c.dom.events.Event
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
 
-external val iconButton: RClass<IconButtonProps>
+external val iconButton: ComponentClass<IconButtonProps>
 
-external interface IconButtonProps : RProps {
+external interface IconButtonProps : Props {
     var onClick: (Event) -> Unit
     var disabled: Boolean
     var color: String

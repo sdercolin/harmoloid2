@@ -3,12 +3,12 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val container: RClass<ContainerProps>
+external val container: ComponentClass<ContainerProps>
 
-external interface ContainerProps : RProps {
+external interface ContainerProps : Props {
     var maxWidth: dynamic
 }

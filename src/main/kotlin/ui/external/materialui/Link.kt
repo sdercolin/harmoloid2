@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val link: RClass<LinkProps>
+external val link: ComponentClass<LinkProps>
 
-external interface LinkProps : RProps {
+external interface LinkProps : Props {
     var href: String
     var target: String
     var color: String

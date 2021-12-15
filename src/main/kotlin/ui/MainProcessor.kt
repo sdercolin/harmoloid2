@@ -22,10 +22,11 @@ import kotlinx.css.marginRight
 import kotlinx.css.marginTop
 import model.ExportResult
 import model.Project
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
+import react.createElement
 import react.setState
 import styled.css
 import styled.styledDiv
@@ -489,15 +490,17 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
                                     HarmonicType.LowerOctave -> Strings.HarmonicTypeLowerOctave
                                 }
                             )
-                            control = checkbox {
-                                attrs {
-                                    checked = harmonies.contains(harmony)
-                                    onChange = {
-                                        val checked = it.target.asDynamic().checked as Boolean
-                                        selectHarmony(trackCard.index, harmony, checked)
+                            control = createElement {
+                                checkbox {
+                                    attrs {
+                                        checked = harmonies.contains(harmony)
+                                        onChange = {
+                                            val checked = it.target.asDynamic().checked as Boolean
+                                            selectHarmony(trackCard.index, harmony, checked)
+                                        }
                                     }
                                 }
-                            }
+                            }!!
                         }
                     }
                 }
@@ -755,14 +758,14 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
     }
 }
 
-external interface MainProcessorProps : RProps {
+external interface MainProcessorProps : Props {
     var project: Project
     var config: Config
     var onUpdateProject: (Project) -> Unit
     var onFinish: (ExportResult) -> Unit
 }
 
-external interface MainProcessorState : RState {
+external interface MainProcessorState : State {
     var isProcessing: Boolean
     var dialogError: DialogErrorState
     var snackbarError: SnackbarErrorState

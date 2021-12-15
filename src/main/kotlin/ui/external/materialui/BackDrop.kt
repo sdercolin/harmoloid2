@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val backdrop: RClass<BackdropProps>
+external val backdrop: ComponentClass<BackdropProps>
 
-external interface BackdropProps : RProps {
+external interface BackdropProps : Props {
     var open: Boolean
     var style: Style
 }

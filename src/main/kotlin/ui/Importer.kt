@@ -10,10 +10,11 @@ import kotlinx.html.js.onClickFunction
 import model.Format
 import model.Project
 import org.w3c.files.File
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
+import react.dom.attrs
 import react.setState
 import styled.css
 import styled.styledDiv
@@ -177,12 +178,12 @@ class Importer : RComponent<ImporterProps, ImporterState>() {
     }
 }
 
-external interface ImporterProps : RProps {
+external interface ImporterProps : Props {
     var formats: List<Format>
     var onImported: (Project) -> Unit
 }
 
-external interface ImporterState : RState {
+external interface ImporterState : State {
     var isLoading: Boolean
     var snackbarError: SnackbarErrorState
     var dialogError: DialogErrorState

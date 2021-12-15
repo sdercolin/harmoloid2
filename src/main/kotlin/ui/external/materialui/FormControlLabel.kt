@@ -3,14 +3,14 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 import react.ReactElement
 
 @JsName("default")
-external val formControlLabel: RClass<FormControlLabelProps>
+external val formControlLabel: ComponentClass<FormControlLabelProps>
 
-external interface FormControlLabelProps : RProps {
+external interface FormControlLabelProps : Props {
     var label: dynamic
     var control: ReactElement
     var labelPlacement: String

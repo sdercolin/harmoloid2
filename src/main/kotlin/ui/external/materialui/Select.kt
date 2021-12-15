@@ -4,13 +4,13 @@
 package ui.external.materialui
 
 import org.w3c.dom.events.Event
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val select: RClass<SelectProps>
+external val select: ComponentClass<SelectProps>
 
-external interface SelectProps : RProps {
+external interface SelectProps : Props {
     var onChange: (Event) -> Unit
     var value: String
     var labelId: String

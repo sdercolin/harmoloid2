@@ -3,10 +3,10 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val toolbar: RClass<ToolbarProps>
+external val toolbar: ComponentClass<ToolbarProps>
 
-external interface ToolbarProps : RProps
+external interface ToolbarProps : Props

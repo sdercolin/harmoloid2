@@ -3,10 +3,10 @@ package ui
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.Element
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import react.setState
 import ui.external.materialui.Color
 import ui.external.materialui.Icons
@@ -71,10 +71,10 @@ class LanguageSelector : RComponent<LanguageSelectorProps, LanguageSelectorState
     }
 }
 
-external interface LanguageSelectorProps : RProps {
+external interface LanguageSelectorProps : Props {
     var onChangeLanguage: () -> Unit
 }
 
-external interface LanguageSelectorState : RState {
+external interface LanguageSelectorState : State {
     var anchorElement: Element?
 }

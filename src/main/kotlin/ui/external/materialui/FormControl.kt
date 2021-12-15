@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val formControl: RClass<FormControlProps>
+external val formControl: ComponentClass<FormControlProps>
 
-external interface FormControlProps : RProps {
+external interface FormControlProps : Props {
     var margin: String
     var disabled: Boolean
     var focused: Boolean

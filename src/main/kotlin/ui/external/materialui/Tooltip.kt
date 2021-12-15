@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val tooltip: RClass<TooltipProps>
+external val tooltip: ComponentClass<TooltipProps>
 
-external interface TooltipProps : RProps {
+external interface TooltipProps : Props {
     var title: String
     var interactive: Boolean
 }

@@ -4,13 +4,13 @@
 package ui.external.materialui
 
 import org.w3c.dom.events.Event
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val fab: RClass<FabProps>
+external val fab: ComponentClass<FabProps>
 
-external interface FabProps : RProps {
+external interface FabProps : Props {
     var onClick: (Event) -> Unit
     var color: String
     var size: String

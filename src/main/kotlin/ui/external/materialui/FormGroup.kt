@@ -3,12 +3,12 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val formGroup: RClass<FormGroupProps>
+external val formGroup: ComponentClass<FormGroupProps>
 
-external interface FormGroupProps : RProps {
+external interface FormGroupProps : Props {
     var row: Boolean
 }
