@@ -3,7 +3,6 @@ package ui
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import react.Component
 import react.Props
 import react.RComponent
 import react.State
