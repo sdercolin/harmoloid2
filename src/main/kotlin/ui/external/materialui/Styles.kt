@@ -2,19 +2,19 @@ package ui.external.materialui
 
 import kotlinx.css.Align
 import kotlinx.css.VerticalAlign
+import react.ComponentClass
+import react.Props
 import react.RBuilder
-import react.RClass
 import react.RHandler
-import react.RProps
 
 @JsModule("@material-ui/core/styles")
 @JsNonModule
 private external val stylesModule: dynamic
 
 private val themeProviderComponent =
-    stylesModule.ThemeProvider.unsafeCast<RClass<ThemeProviderProps>>()
+    stylesModule.ThemeProvider.unsafeCast<ComponentClass<ThemeProviderProps>>()
 
-external interface ThemeProviderProps : RProps {
+external interface ThemeProviderProps : Props {
     var theme: dynamic
 }
 

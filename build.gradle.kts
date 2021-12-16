@@ -1,6 +1,6 @@
 plugins {
-    kotlin("js") version "1.4.30"
-    kotlin("plugin.serialization") version "1.4.30-RC"
+    kotlin("js") version "1.6.0"
+    kotlin("plugin.serialization") version "1.5.31"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
 }
 
@@ -8,8 +8,7 @@ group = "com.sdercolin.harmoloid"
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://kotlin.bintray.com/kotlin-js-wrappers/") }
-    maven { url = uri("https://dl.bintray.com/kotlin/kotlinx/") }
+    jcenter()
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
@@ -21,14 +20,13 @@ dependencies {
     implementation("com.sdercolin.harmoloid:harmoloid-core:1.2")
 
     // Kotlin
-    implementation(kotlin("stdlib-js"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.4.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
     // React, React DOM + Wrappers
-    implementation("org.jetbrains:kotlin-react:17.0.1-pre.148-kotlin-1.4.21")
-    implementation("org.jetbrains:kotlin-react-dom:17.0.1-pre.148-kotlin-1.4.21")
-    implementation("org.jetbrains:kotlin-styled:5.2.1-pre.148-kotlin-1.4.21")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-react:17.0.2-pre.264-kotlin-1.5.31")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:17.0.2-pre.264-kotlin-1.5.31")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:5.3.3-pre.264-kotlin-1.5.31")
     implementation(npm("react", "17.0.2"))
     implementation(npm("react-dom", "17.0.2"))
 
@@ -46,6 +44,7 @@ dependencies {
     implementation(npm("i18next-browser-languagedetector", "6.0.1"))
 
     // Others
+    implementation(npm("stream", "0.0.2"))
     implementation(npm("jszip", "3.5.0"))
     implementation(npm("file-saver", "2.0.5"))
     implementation(npm("raw-loader", "4.0.2"))
@@ -54,13 +53,10 @@ dependencies {
     implementation(npm("uuid", "8.3.2"))
     implementation(npm("midi-parser-js", "4.0.4"))
     implementation(npm("js-cookie", "2.2.1"))
-
-    // Testing
-    testImplementation(kotlin("test-js"))
 }
 
 kotlin {
-    js(LEGACY) {
+    js {
         browser {
             binaries.executable()
             webpackTask {

@@ -4,13 +4,13 @@
 package ui.external.materialui
 
 import org.w3c.dom.Element
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val menu: RClass<MenuProps>
+external val menu: ComponentClass<MenuProps>
 
-external interface MenuProps : RProps {
+external interface MenuProps : Props {
     var onClose: () -> Unit
     var keepMounted: Boolean
     var open: Boolean

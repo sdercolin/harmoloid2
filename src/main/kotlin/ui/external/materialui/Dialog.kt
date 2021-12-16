@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val dialog: RClass<DialogProps>
+external val dialog: ComponentClass<DialogProps>
 
-external interface DialogProps : RProps {
+external interface DialogProps : Props {
     var open: Boolean
     var onClose: () -> Unit
     var fullWidth: Boolean

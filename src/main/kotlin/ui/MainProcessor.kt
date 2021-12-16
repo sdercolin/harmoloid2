@@ -9,8 +9,6 @@ import com.sdercolin.harmoloid.core.model.Tonality
 import com.sdercolin.harmoloid.core.model.Track
 import com.sdercolin.harmoloid.core.model.TrackTonalityAnalysisResult
 import com.sdercolin.harmoloid.core.util.update
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.css.Align
 import kotlinx.css.Display
 import kotlinx.css.LinearDimension
@@ -22,10 +20,10 @@ import kotlinx.css.marginRight
 import kotlinx.css.marginTop
 import model.ExportResult
 import model.Project
+import react.Props
 import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.State
+import react.createElement
 import react.setState
 import styled.css
 import styled.styledDiv
@@ -56,13 +54,13 @@ import ui.external.materialui.typography
 import ui.strings.Strings
 import ui.strings.string
 
-class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, MainProcessorState>(props) {
+class MainProcessor(props: MainProcessorProps) : CoroutineRComponent<MainProcessorProps, MainProcessorState>(props) {
 
     private lateinit var core: Core
 
     fun export() {
         setState { isProcessing = true }
-        GlobalScope.launch {
+        launch {
             try {
                 val exportProject = props.project.copy(
                     content = core.content,
@@ -138,55 +136,57 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
                             )
                         }
                     }
-                    cardActions {
-                        button {
-                            attrs {
-                                onClick = {
-                                    val requestedExpanded =
-                                        if (trackState.expanded == Expanded.MarkTonality)
-                                            Expanded.None
-                                        else Expanded.MarkTonality
-                                    toggleCollapse(trackState.index, requestedExpanded)
+                    if (trackState.track.bars.isNotEmpty()) {
+                        cardActions {
+                            button {
+                                attrs {
+                                    onClick = {
+                                        val requestedExpanded =
+                                            if (trackState.expanded == Expanded.MarkTonality)
+                                                Expanded.None
+                                            else Expanded.MarkTonality
+                                        toggleCollapse(trackState.index, requestedExpanded)
+                                    }
+                                }
+                                if (trackState.track.isTonalityMarked) Icons.checkCircle {}
+                                else Icons.edit {}
+                                styledDiv {
+                                    css { marginLeft = LinearDimension("5px") }
+                                    +string(Strings.MarkTonalityButton)
                                 }
                             }
-                            if (trackState.track.isTonalityMarked) Icons.checkCircle {}
-                            else Icons.edit {}
-                            styledDiv {
-                                css { marginLeft = LinearDimension("5px") }
-                                +string(Strings.MarkTonalityButton)
-                            }
-                        }
-                        button {
-                            attrs {
-                                onClick = {
-                                    val requestedExpanded =
-                                        if (trackState.expanded == Expanded.SelectHarmony)
-                                            Expanded.None
-                                        else Expanded.SelectHarmony
-                                    toggleCollapse(trackState.index, requestedExpanded)
+                            button {
+                                attrs {
+                                    onClick = {
+                                        val requestedExpanded =
+                                            if (trackState.expanded == Expanded.SelectHarmony)
+                                                Expanded.None
+                                            else Expanded.SelectHarmony
+                                        toggleCollapse(trackState.index, requestedExpanded)
+                                    }
+                                    disabled = !trackState.track.isTonalityMarked
                                 }
-                                disabled = !trackState.track.isTonalityMarked
-                            }
-                            if (trackState.track.harmonies?.isNotEmpty() == true) Icons.checkCircle {}
-                            else Icons.edit {}
-                            styledDiv {
-                                css { marginLeft = LinearDimension("5px") }
-                                +string(Strings.SelectHarmonyButton)
+                                if (trackState.track.harmonies?.isNotEmpty() == true) Icons.checkCircle {}
+                                else Icons.edit {}
+                                styledDiv {
+                                    css { marginLeft = LinearDimension("5px") }
+                                    +string(Strings.SelectHarmonyButton)
+                                }
                             }
                         }
-                    }
-                    collapse {
-                        attrs {
-                            `in` = trackState.expanded != Expanded.None
-                            unmountOnExit = true
-                        }
-                        when (trackState.expanded) {
-                            Expanded.None -> Unit
-                            Expanded.MarkTonality -> {
-                                buildTonalityMarking(trackState)
+                        collapse {
+                            attrs {
+                                `in` = trackState.expanded != Expanded.None
+                                unmountOnExit = true
                             }
-                            Expanded.SelectHarmony -> {
-                                buildHarmonySelection(trackState)
+                            when (trackState.expanded) {
+                                Expanded.None -> Unit
+                                Expanded.MarkTonality -> {
+                                    buildTonalityMarking(trackState)
+                                }
+                                Expanded.SelectHarmony -> {
+                                    buildHarmonySelection(trackState)
+                                }
                             }
                         }
                     }
@@ -489,15 +489,17 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
                                     HarmonicType.LowerOctave -> Strings.HarmonicTypeLowerOctave
                                 }
                             )
-                            control = checkbox {
-                                attrs {
-                                    checked = harmonies.contains(harmony)
-                                    onChange = {
-                                        val checked = it.target.asDynamic().checked as Boolean
-                                        selectHarmony(trackCard.index, harmony, checked)
+                            control = createElement {
+                                checkbox {
+                                    attrs {
+                                        checked = harmonies.contains(harmony)
+                                        onChange = {
+                                            val checked = it.target.asDynamic().checked as Boolean
+                                            selectHarmony(trackCard.index, harmony, checked)
+                                        }
                                     }
                                 }
-                            }
+                            }!!
                         }
                     }
                 }
@@ -664,14 +666,15 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
     }
 
     private fun applySelectedHarmoniesToAllTracks(trackIndex: Int) {
-        if (state.trackCards.any { !it.track.isTonalityMarked }) {
+        if (state.trackCards.any { it.track.bars.isNotEmpty() && !it.track.isTonalityMarked }) {
             showMessageBar(string(Strings.PassageNotSetMessageBar))
             return
         }
         val harmonies = state.trackCards[trackIndex].track.harmonies.orEmpty()
         state.trackCards.indices.filter { it != trackIndex }.forEach {
             updateTrack(it) { trackCard ->
-                trackCard.copy(track = trackCard.track.copy(harmonies = harmonies))
+                if (trackCard.track.bars.isEmpty()) trackCard
+                else trackCard.copy(track = trackCard.track.copy(harmonies = harmonies))
             }
         }
     }
@@ -755,14 +758,14 @@ class MainProcessor(props: MainProcessorProps) : RComponent<MainProcessorProps, 
     }
 }
 
-external interface MainProcessorProps : RProps {
+external interface MainProcessorProps : Props {
     var project: Project
     var config: Config
     var onUpdateProject: (Project) -> Unit
     var onFinish: (ExportResult) -> Unit
 }
 
-external interface MainProcessorState : RState {
+external interface MainProcessorState : State {
     var isProcessing: Boolean
     var dialogError: DialogErrorState
     var snackbarError: SnackbarErrorState

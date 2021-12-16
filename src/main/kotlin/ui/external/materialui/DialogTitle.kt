@@ -3,12 +3,12 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val dialogTitle: RClass<DialogTitleProps>
+external val dialogTitle: ComponentClass<DialogTitleProps>
 
-external interface DialogTitleProps : RProps {
+external interface DialogTitleProps : Props {
     var variant: String
 }

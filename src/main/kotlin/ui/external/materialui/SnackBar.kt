@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val snackbar: RClass<SnackbarProps>
+external val snackbar: ComponentClass<SnackbarProps>
 
-external interface SnackbarProps : RProps {
+external interface SnackbarProps : Props {
     var anchorOrigin: SnackbarAnchorOrigin
     var open: Boolean
     var autoHideDuration: Int

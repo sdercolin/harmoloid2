@@ -18,10 +18,10 @@ import kotlinx.css.minHeight
 import kotlinx.css.width
 import model.Format
 import model.Project
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import react.createRef
 import react.setState
 import styled.css
@@ -46,9 +46,9 @@ import ui.model.Page
 import ui.strings.Strings
 import ui.strings.string
 
-class App : RComponent<RProps, AppState>() {
+class App : RComponent<Props, AppState>() {
 
-    private var mainProcessorRef = createRef<MainProcessor?>()
+    private var mainProcessorRef = createRef<MainProcessor>()
 
     override fun AppState.init() {
         pageStack = listOf(Page.Import)
@@ -296,7 +296,7 @@ class App : RComponent<RProps, AppState>() {
     private val AppState.currentPage get() = pageStack.last()
 }
 
-external interface AppState : RState {
+external interface AppState : State {
     var pageStack: List<Page>
     var isShowingConfigEditorDialog: Boolean
     var project: Project?

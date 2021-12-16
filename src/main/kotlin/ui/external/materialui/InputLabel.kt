@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val inputLabel: RClass<InputLabelProps>
+external val inputLabel: ComponentClass<InputLabelProps>
 
-external interface InputLabelProps : RProps {
+external interface InputLabelProps : Props {
     var id: String
     var style: Style
     var focused: Boolean

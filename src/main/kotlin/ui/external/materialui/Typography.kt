@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val typography: RClass<TypographyProps>
+external val typography: ComponentClass<TypographyProps>
 
-external interface TypographyProps : RProps {
+external interface TypographyProps : Props {
     var variant: String
     var component: String
     var color: String

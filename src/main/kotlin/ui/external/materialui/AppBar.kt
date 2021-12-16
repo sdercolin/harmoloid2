@@ -3,12 +3,12 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val appBar: RClass<AppBarProps>
+external val appBar: ComponentClass<AppBarProps>
 
-external interface AppBarProps : RProps {
+external interface AppBarProps : Props {
     var position: String
 }

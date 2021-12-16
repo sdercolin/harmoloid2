@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val divider: RClass<DividerProps>
+external val divider: ComponentClass<DividerProps>
 
-external interface DividerProps : RProps {
+external interface DividerProps : Props {
     var light: Boolean
     var variant: String
 }

@@ -3,8 +3,8 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val cardContent: RClass<RProps>
+external val cardContent: ComponentClass<Props>

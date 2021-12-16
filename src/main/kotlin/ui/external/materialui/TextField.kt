@@ -4,13 +4,13 @@
 package ui.external.materialui
 
 import org.w3c.dom.events.Event
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val textField: RClass<TextFieldProps>
+external val textField: ComponentClass<TextFieldProps>
 
-external interface TextFieldProps : RProps {
+external interface TextFieldProps : Props {
     var value: String
     var error: Boolean
     var id: String

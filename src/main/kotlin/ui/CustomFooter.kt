@@ -7,10 +7,10 @@ import kotlinx.css.marginBottom
 import kotlinx.css.marginTop
 import kotlinx.css.textAlign
 import kotlinx.css.width
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import styled.css
 import styled.styledFooter
 import ui.external.materialui.Color
@@ -20,7 +20,7 @@ import ui.external.materialui.typography
 import ui.strings.Strings
 import ui.strings.string
 
-class CustomFooter : RComponent<RProps, RState>() {
+class CustomFooter : RComponent<Props, State>() {
     override fun RBuilder.render() {
         styledFooter {
             css {

@@ -1,12 +1,9 @@
 package ui
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.w3c.dom.Element
+import react.Props
 import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import react.setState
 import ui.external.materialui.Color
 import ui.external.materialui.Icons
@@ -17,7 +14,7 @@ import ui.external.react.findDOMNode
 import ui.strings.Language
 import ui.strings.changeLanguage
 
-class LanguageSelector : RComponent<LanguageSelectorProps, LanguageSelectorState>() {
+class LanguageSelector : CoroutineRComponent<LanguageSelectorProps, LanguageSelectorState>() {
     override fun LanguageSelectorState.init() {
         anchorElement = null
     }
@@ -52,7 +49,7 @@ class LanguageSelector : RComponent<LanguageSelectorProps, LanguageSelectorState
     }
 
     private fun selectLanguage(language: Language) {
-        GlobalScope.launch {
+        launch {
             changeLanguage(language.code)
             props.onChangeLanguage()
         }
@@ -71,10 +68,10 @@ class LanguageSelector : RComponent<LanguageSelectorProps, LanguageSelectorState
     }
 }
 
-external interface LanguageSelectorProps : RProps {
+external interface LanguageSelectorProps : Props {
     var onChangeLanguage: () -> Unit
 }
 
-external interface LanguageSelectorState : RState {
+external interface LanguageSelectorState : State {
     var anchorElement: Element?
 }

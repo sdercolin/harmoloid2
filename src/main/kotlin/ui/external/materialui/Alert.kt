@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val alert: RClass<AlertProps>
+external val alert: ComponentClass<AlertProps>
 
-external interface AlertProps : RProps {
+external interface AlertProps : Props {
     var severity: String
     var variant: String
     var style: Style

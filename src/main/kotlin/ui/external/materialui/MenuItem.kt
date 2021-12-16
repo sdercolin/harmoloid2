@@ -3,13 +3,13 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val menuItem: RClass<MenuItemProps>
+external val menuItem: ComponentClass<MenuItemProps>
 
-external interface MenuItemProps : RProps {
+external interface MenuItemProps : Props {
     var onClick: () -> Unit
     var value: String
 }

@@ -117,6 +117,7 @@ object Svp {
         val groupElements = projectElement.property("library").asList.toMutableList()
 
         var trackElements = projectElement.property("tracks").asList.toList()
+            .sortedBy { it.maybeProperty("dispOrder")?.asIntOrNull ?: 0 }
         trackElements = trackElements.zip(project.content.tracks).fold(trackElements) { accumulator, item ->
             val (trackElement, trackModel) = item
             val trackChorus = project.chorus[project.content.tracks.indexOf(trackModel)]
@@ -144,8 +145,8 @@ object Svp {
         trackChorus: Map<HarmonicType, List<NoteShift>>,
         projectElement: JsonElement
     ): List<Pair<JsonElement, List<JsonElement>>> {
-        if (trackModel.bars.isEmpty()) return listOf(this to listOf())
-        if (trackChorus.isEmpty()) return listOf(this to listOf())
+        if (trackModel.bars.isEmpty()) return listOf()
+        if (trackChorus.isEmpty()) return listOf()
         return trackChorus.map { (harmony, noteShifts) ->
             var newTrackElement = withProperty(
                 "name",

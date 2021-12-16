@@ -3,8 +3,8 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val dialogContentText: RClass<RProps>
+external val dialogContentText: ComponentClass<Props>

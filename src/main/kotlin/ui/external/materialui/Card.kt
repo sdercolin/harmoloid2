@@ -3,12 +3,12 @@
 
 package ui.external.materialui
 
-import react.RClass
-import react.RProps
+import react.ComponentClass
+import react.Props
 
 @JsName("default")
-external val card: RClass<CardProps>
+external val card: ComponentClass<CardProps>
 
-external interface CardProps : RProps {
+external interface CardProps : Props {
     var variant: String
 }

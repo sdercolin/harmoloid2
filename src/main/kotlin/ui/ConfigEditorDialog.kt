@@ -5,17 +5,18 @@ import com.sdercolin.harmoloid.core.model.Solfege
 import external.saveAs
 import io.ConfigJson
 import kotlinx.browser.window
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.css.LinearDimension
 import kotlinx.css.margin
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
+import react.Props
 import react.RBuilder
-import react.RProps
-import react.RSetState
+import react.StateSetter
+import react.createElement
 import react.dom.div
-import react.rFunction
+import react.fc
 import react.useState
 import styled.css
 import styled.styledDiv
@@ -65,7 +66,7 @@ fun RBuilder.configEditorDialog(
     attrs.currentConfig = currentConfig
 }
 
-val CONFIG_EDITOR_DIALOG = rFunction<ConfigEditorDialogProps>("ConfigEditorDialog") { props ->
+val CONFIG_EDITOR_DIALOG = fc<ConfigEditorDialogProps>("ConfigEditorDialog") { props ->
 
     val (state, onChangeState) = useState(ConfigState.from(props.currentConfig))
 
@@ -223,33 +224,35 @@ private fun RBuilder.buildTextFieldItem(
     state: ConfigState,
     valueValidPair: Pair<String, Boolean>,
     createDiff: (String) -> ConfigStateDiff,
-    onChangeState: (ConfigState) -> Unit
+    onChangeState: StateSetter<ConfigState>
 ) {
     div {
         formControlLabel {
             attrs {
                 label = name
-                control = textField {
-                    attrs {
-                        value = valueValidPair.first
-                        variant = TextFieldVariant.outlined
-                        style = Style(
-                            marginLeft = "24px",
-                            marginTop = "12px",
-                            marginBottom = "12px",
-                            width = "100px"
-                        )
-                        size = "small"
-                        error = valueValidPair.second.not()
-                        onChange = {
-                            val newValue = it.target.asDynamic().value as String
-                            val diff = createDiff(newValue)
-                            onChangeState(state.update(diff))
+                control = createElement {
+                    textField {
+                        attrs {
+                            value = valueValidPair.first
+                            variant = TextFieldVariant.outlined
+                            style = Style(
+                                marginLeft = "24px",
+                                marginTop = "12px",
+                                marginBottom = "12px",
+                                width = "100px"
+                            )
+                            size = "small"
+                            error = valueValidPair.second.not()
+                            onChange = {
+                                val newValue = it.target.asDynamic().value as String
+                                val diff = createDiff(newValue)
+                                onChangeState(state.update(diff))
+                            }
                         }
                     }
-                }
-                size = "small"
-                labelPlacement = LabelPlacement.start
+                    size = "small"
+                    labelPlacement = LabelPlacement.start
+                }!!
             }
         }
     }
@@ -262,7 +265,7 @@ private fun RBuilder.buildKeyShiftSection(
     state: ConfigState,
     valueList: List<Int>,
     createDiff: (List<Int>) -> ConfigStateDiff,
-    onChangeState: (ConfigState) -> Unit
+    onChangeState: StateSetter<ConfigState>
 ) {
     styledDiv {
         css {
@@ -271,39 +274,41 @@ private fun RBuilder.buildKeyShiftSection(
         formControlLabel {
             attrs {
                 label = name
-                control = div {
-                    button {
-                        attrs {
-                            size = ButtonSize.small
-                            style = Style(marginLeft = "24px")
-                            variant = ButtonVariant.outlined
-                            onClick = {
-                                val diff = createDiff(
-                                    if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyDefault
-                                    else Config.keyShiftForLowerThirdHarmonyDefault
-                                )
-                                onChangeState(state.update(diff))
+                control = createElement {
+                    div {
+                        button {
+                            attrs {
+                                size = ButtonSize.small
+                                style = Style(marginLeft = "24px")
+                                variant = ButtonVariant.outlined
+                                onClick = {
+                                    val diff = createDiff(
+                                        if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyDefault
+                                        else Config.keyShiftForLowerThirdHarmonyDefault
+                                    )
+                                    onChangeState(state.update(diff))
+                                }
                             }
+                            +string(Strings.ConfigEditorUseDefaultButton)
                         }
-                        +string(Strings.ConfigEditorUseDefaultButton)
-                    }
-                    button {
-                        attrs {
-                            size = ButtonSize.small
-                            style = Style(marginLeft = "24px")
-                            variant = ButtonVariant.outlined
-                            onClick = {
-                                val diff = createDiff(
-                                    if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyStandard
-                                    else Config.keyShiftForLowerThirdHarmonyStandard
-                                )
-                                onChangeState(state.update(diff))
+                        button {
+                            attrs {
+                                size = ButtonSize.small
+                                style = Style(marginLeft = "24px")
+                                variant = ButtonVariant.outlined
+                                onClick = {
+                                    val diff = createDiff(
+                                        if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyStandard
+                                        else Config.keyShiftForLowerThirdHarmonyStandard
+                                    )
+                                    onChangeState(state.update(diff))
+                                }
                             }
+                            +string(Strings.ConfigEditorUseStandardButton)
                         }
-                        +string(Strings.ConfigEditorUseStandardButton)
                     }
-                }
-                labelPlacement = LabelPlacement.start
+                    labelPlacement = LabelPlacement.start
+                }!!
             }
         }
     }
@@ -368,7 +373,7 @@ private fun RBuilder.buildValidSolfegeSection(
     state: ConfigState,
     valueList: List<Boolean>,
     createDiff: (List<Boolean>) -> ConfigStateDiff,
-    onChangeState: (ConfigState) -> Unit
+    onChangeState: StateSetter<ConfigState>
 ) {
     styledDiv {
         css {
@@ -377,24 +382,26 @@ private fun RBuilder.buildValidSolfegeSection(
         formControlLabel {
             attrs {
                 label = name
-                control = div {
-                    button {
-                        attrs {
-                            size = ButtonSize.small
-                            style = Style(marginLeft = "24px")
-                            variant = ButtonVariant.outlined
-                            onClick = {
-                                val diff = createDiff(
-                                    ConfigState.getValidSolfegeSyllablesInOctave(
-                                        Config.validSolfegeSyllablesInOctaveDefault
+                control = createElement {
+                    div {
+                        button {
+                            attrs {
+                                size = ButtonSize.small
+                                style = Style(marginLeft = "24px")
+                                variant = ButtonVariant.outlined
+                                onClick = {
+                                    val diff = createDiff(
+                                        ConfigState.getValidSolfegeSyllablesInOctave(
+                                            Config.validSolfegeSyllablesInOctaveDefault
+                                        )
                                     )
-                                )
-                                onChangeState(state.update(diff))
+                                    onChangeState(state.update(diff))
+                                }
                             }
+                            +string(Strings.ConfigEditorUseDefaultButton)
                         }
-                        +string(Strings.ConfigEditorUseDefaultButton)
                     }
-                }
+                }!!
                 labelPlacement = LabelPlacement.start
             }
         }
@@ -413,20 +420,22 @@ private fun RBuilder.buildValidSolfegeSection(
                 formControlLabel {
                     attrs {
                         label = solfege.displayName
-                        control = checkbox {
-                            attrs {
-                                style = Style(marginLeft = "16px")
-                                checked = valueList[solfege.ordinal]
-                                onChange = { event ->
-                                    val checked = event.target.asDynamic().checked as Boolean
-                                    val newValueList = valueList.indices.map {
-                                        if (it == solfege.ordinal) checked else valueList[it]
+                        control = createElement {
+                            checkbox {
+                                attrs {
+                                    style = Style(marginLeft = "16px")
+                                    checked = valueList[solfege.ordinal]
+                                    onChange = { event ->
+                                        val checked = event.target.asDynamic().checked as Boolean
+                                        val newValueList = valueList.indices.map {
+                                            if (it == solfege.ordinal) checked else valueList[it]
+                                        }
+                                        val diff = createDiff(newValueList)
+                                        onChangeState(state.update(diff))
                                     }
-                                    val diff = createDiff(newValueList)
-                                    onChangeState(state.update(diff))
                                 }
                             }
-                        }
+                        }!!
                     }
                 }
             }
@@ -442,8 +451,8 @@ private fun downloadConfigFile(state: ConfigState) {
     saveAs(blog, "harmoloid-config.json")
 }
 
-private fun uploadConfigFile(onChangeState: RSetState<ConfigState>) {
-    GlobalScope.launch {
+private fun uploadConfigFile(onChangeState: StateSetter<ConfigState>) {
+    MainScope().launch {
         val file = waitFileSelection(accept = "json", multiple = false).firstOrNull() ?: return@launch
         val content = file.readText()
         val config = ConfigJson.parse(content)
@@ -568,7 +577,7 @@ data class ConfigState(
     }
 }
 
-external interface ConfigEditorDialogProps : RProps {
+external interface ConfigEditorDialogProps : Props {
     var isShowing: Boolean
     var close: () -> Unit
     var saveAndClose: (Config) -> Unit

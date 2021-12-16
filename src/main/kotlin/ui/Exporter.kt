@@ -6,10 +6,10 @@ import kotlinx.css.margin
 import kotlinx.css.marginTop
 import kotlinx.css.padding
 import model.ExportResult
+import react.Props
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import styled.css
 import styled.styledDiv
 import ui.external.materialui.ButtonVariant
@@ -22,7 +22,7 @@ import ui.external.materialui.typography
 import ui.strings.Strings
 import ui.strings.string
 
-class Exporter : RComponent<ExporterProps, RState>() {
+class Exporter : RComponent<ExporterProps, State>() {
 
     override fun RBuilder.render() {
         styledDiv {
@@ -84,7 +84,7 @@ class Exporter : RComponent<ExporterProps, RState>() {
     }
 }
 
-external interface ExporterProps : RProps {
+external interface ExporterProps : Props {
     var result: ExportResult
     var onRestart: () -> Unit
 }
