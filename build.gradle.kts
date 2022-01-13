@@ -17,7 +17,7 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
 
 dependencies {
     // Core
-    implementation("com.sdercolin.harmoloid:harmoloid-core:1.2")
+    implementation("com.sdercolin.harmoloid:harmoloid-core:1.3")
 
     // Kotlin
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.5.2")
