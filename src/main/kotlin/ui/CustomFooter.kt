@@ -35,14 +35,23 @@ class CustomFooter : RComponent<Props, State>() {
                     variant = TypographyVariant.body2
                     color = Color.inherit
                 }
-                +"HARMOLOID © 2014 - 2021　|　"
+                +"HARMOLOID © 2014 - 2022　|　"
                 link {
                     attrs {
                         href = "https://github.com/sdercolin/harmoloid2"
                         target = "_blank"
                         color = Color.inherit
                     }
-                    +"View Source Code on GitHub"
+                    +"GitHub"
+                }
+                +"　|　"
+                link {
+                    attrs {
+                        href = "https://discord.gg/TyEcQ6P73y"
+                        target = "_blank"
+                        color = Color.inherit
+                    }
+                    +"Discord"
                 }
                 +"　|　"
                 link {
