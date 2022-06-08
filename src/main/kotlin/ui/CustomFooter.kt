@@ -42,7 +42,16 @@ class CustomFooter : RComponent<Props, State>() {
                         target = "_blank"
                         color = Color.inherit
                     }
-                    +"View Source Code on GitHub"
+                    +"GitHub"
+                }
+                +"　|　"
+                link {
+                    attrs {
+                        href = "https://discord.gg/TyEcQ6P73y"
+                        target = "_blank"
+                        color = Color.inherit
+                    }
+                    +"Discord"
                 }
                 +"　|　"
                 link {
