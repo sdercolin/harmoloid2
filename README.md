@@ -1,5 +1,7 @@
 # HARMOLOID2
 
+[![Discord](https://img.shields.io/discord/984044285584359444?style=for-the-badge&label=discord&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/TyEcQ6P73y)
+
 HARMOLOID is an application for generating simple chorus based on projects of singing voice synthesizers.
 
 The current version `2.x` is built with [Kotlin for JavaScript](https://kotlinlang.org/docs/js-overview.html)
