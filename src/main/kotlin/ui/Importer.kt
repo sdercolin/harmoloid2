@@ -1,5 +1,6 @@
 package ui
 
+import com.sdercolin.harmoloid.core.Core
 import com.sdercolin.harmoloid.core.exception.NoteOverlappingException
 import kotlinx.coroutines.delay
 import kotlinx.css.LinearDimension
@@ -127,6 +128,7 @@ class Importer : CoroutineRComponent<ImporterProps, ImporterState>() {
                 delay(100)
                 val parseFunction = format.parser
                 val project = parseFunction(files)
+                Core(project.content)
                 console.log("Project was imported successfully.")
                 console.log(project)
                 props.onImported.invoke(project)
