@@ -1,6 +1,6 @@
-package ui
+package ui.common
 
 data class SnackbarErrorState(
-    val open: Boolean = false,
+    val isShowing: Boolean = false,
     val message: String = ""
 )

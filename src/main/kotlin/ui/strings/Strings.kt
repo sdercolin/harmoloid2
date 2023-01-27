@@ -112,11 +112,6 @@ enum class Strings(val en: String, val ja: String, val zhCN: String) {
         ja = "プロジェクトインポート画面に戻る",
         zhCN = "回到初始页面"
     ),
-    ProcessingOverlay(
-        en = "Processing…",
-        ja = "処理中…",
-        zhCN = "正在处理…"
-    ),
     TrackLabel(
         en = "Track #{{number}}",
         ja = "トラック #{{number}}",

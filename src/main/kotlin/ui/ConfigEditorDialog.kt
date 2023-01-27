@@ -2,224 +2,215 @@ package ui
 
 import com.sdercolin.harmoloid.core.Config
 import com.sdercolin.harmoloid.core.model.Solfege
+import csstype.Color
+import csstype.px
 import external.saveAs
 import io.ConfigJson
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.css.LinearDimension
-import kotlinx.css.margin
+import kotlinx.js.jso
+import mui.icons.material.GetApp
+import mui.icons.material.Publish
+import mui.material.Alert
+import mui.material.AlertColor
+import mui.material.BaseTextFieldProps
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.ButtonVariant
+import mui.material.Checkbox
+import mui.material.CheckboxColor
+import mui.material.Dialog
+import mui.material.DialogActions
+import mui.material.DialogContent
+import mui.material.DialogTitle
+import mui.material.FormControl
+import mui.material.FormControlLabel
+import mui.material.FormControlMargin
+import mui.material.FormControlVariant
+import mui.material.FormGroup
+import mui.material.FormLabel
+import mui.material.IconButton
+import mui.material.LabelPlacement
+import mui.material.Link
+import mui.material.MenuItem
+import mui.material.OutlinedTextFieldProps
+import mui.material.Paper
+import mui.material.Size
+import mui.material.StandardTextFieldProps
+import mui.material.TextField
+import mui.material.Tooltip
+import mui.material.Typography
+import mui.material.styles.TypographyVariant
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
+import react.ChildrenBuilder
+import react.FC
 import react.Props
-import react.RBuilder
+import react.ReactNode
 import react.StateSetter
-import react.createElement
-import react.dom.div
-import react.fc
+import react.create
+import react.css.css
+import react.dom.html.ReactHTML.div
 import react.useState
-import styled.css
-import styled.styledDiv
 import ui.ConfigState.ConfigStateDiff
-import ui.external.materialui.ButtonSize
-import ui.external.materialui.ButtonVariant
-import ui.external.materialui.Color
-import ui.external.materialui.FormControlMargin
-import ui.external.materialui.Icons
-import ui.external.materialui.LabelPlacement
-import ui.external.materialui.Severity
-import ui.external.materialui.Style
-import ui.external.materialui.TextFieldVariant
-import ui.external.materialui.TypographyVariant
-import ui.external.materialui.alert
-import ui.external.materialui.button
-import ui.external.materialui.checkbox
-import ui.external.materialui.dialog
-import ui.external.materialui.dialogActions
-import ui.external.materialui.dialogContent
-import ui.external.materialui.dialogTitle
-import ui.external.materialui.formControl
-import ui.external.materialui.formControlLabel
-import ui.external.materialui.formGroup
-import ui.external.materialui.iconButton
-import ui.external.materialui.inputLabel
-import ui.external.materialui.link
-import ui.external.materialui.menuItem
-import ui.external.materialui.select
-import ui.external.materialui.textField
-import ui.external.materialui.tooltip
-import ui.external.materialui.typography
 import ui.strings.Strings
 import ui.strings.string
 import util.readText
 import util.waitFileSelection
 
-fun RBuilder.configEditorDialog(
-    isShowing: Boolean,
-    close: () -> Unit,
-    saveAndClose: (Config) -> Unit,
-    currentConfig: Config
-) = CONFIG_EDITOR_DIALOG.invoke {
-    attrs.isShowing = isShowing
-    attrs.close = close
-    attrs.saveAndClose = saveAndClose
-    attrs.currentConfig = currentConfig
-}
-
-val CONFIG_EDITOR_DIALOG = fc<ConfigEditorDialogProps>("ConfigEditorDialog") { props ->
+val ConfigEditorDialog = FC<ConfigEditorDialogProps>("ConfigEditorDialog") { props ->
 
     val (state, onChangeState) = useState(ConfigState.from(props.currentConfig))
 
-    dialog {
-        attrs {
-            open = props.isShowing
-            onClose = {
-                props.close()
-                onChangeState(ConfigState.from(props.currentConfig))
-            }
-            fullWidth = false
-            maxWidth = "xl"
+    Dialog {
+        open = props.isShowing
+        onClose = { _, _ ->
+            props.close()
+            onChangeState(ConfigState.from(props.currentConfig))
         }
-        dialogTitle {
-            +string(Strings.ConfigEditorDialogTitle)
-            tooltip {
-                attrs {
-                    title = string(Strings.ImportConfigButton)
-                    interactive = false
-                }
-                iconButton {
-                    attrs {
-                        style = Style(marginLeft = "40px", marginRight = "8px")
+        fullWidth = false
+        maxWidth = "xl"
+        Paper {
+            style = jso {
+                background = Color("#424242")
+            }
+            DialogTitle {
+                +string(Strings.ConfigEditorDialogTitle)
+                Tooltip {
+                    title = ReactNode(string(Strings.ImportConfigButton))
+                    disableInteractive = true
+                    IconButton {
+                        style = jso {
+                            marginLeft = 40.px
+                            marginRight = 8.px
+                        }
                         onClick = { uploadConfigFile(onChangeState) }
+
+                        GetApp()
                     }
-                    Icons.fetch { }
                 }
-            }
-            tooltip {
-                attrs {
-                    title = string(Strings.ExportConfigButton)
-                    interactive = false
-                }
-                iconButton {
-                    attrs {
-                        style = Style(marginLeft = "8px", marginRight = "8px")
+                Tooltip {
+                    title = ReactNode(string(Strings.ExportConfigButton))
+                    disableInteractive = true
+                    IconButton {
+                        style = jso {
+                            marginLeft = 9.px
+                            marginRight = 8.px
+                        }
                         onClick = { downloadConfigFile(state) }
+                        Publish()
                     }
-                    Icons.publish { }
                 }
             }
-        }
-        alert {
-            attrs {
-                severity = Severity.warning
-                style = Style(borderRadius = "0px")
-            }
-            typography {
-                attrs.variant = TypographyVariant.body2
-                +string(Strings.ConfigEditorWarning)
-                link {
-                    attrs {
-                        color = Color.inherit
+            Alert {
+                severity = AlertColor.warning
+                style = jso { borderRadius = 0.px }
+                Typography {
+                    variant = TypographyVariant.body2
+                    +string(Strings.ConfigEditorWarning)
+                    Link {
+                        color = appTheme.palette.warning.main
                         href = "#"
                         onClick = { window.open(url = string(Strings.ConfigDescriptionUrl), target = "_blank") }
+                        +string(Strings.ConfigEditorWarningLearnMore)
                     }
-                    +string(Strings.ConfigEditorWarningLearnMore)
                 }
             }
-        }
-        div {
-            dialogContent {
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMinLengthRatioOfNoteForValidBar),
-                    state = state,
-                    valueValidPair = state.minLengthRatioOfNoteForValidBar,
-                    createDiff = { ConfigStateDiff(minLengthRatioOfNoteForValidBar = it) },
-                    onChangeState = onChangeState
-                )
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMinProbabilityForCertainTonality),
-                    state = state,
-                    valueValidPair = state.minProbabilityForCertainTonality,
-                    createDiff = { ConfigStateDiff(minProbabilityForCertainTonality = it) },
-                    onChangeState = onChangeState
-                )
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMaxProbabilityDifferenceForSimilarlyCertainTonalities),
-                    state = state,
-                    valueValidPair = state.maxProbabilityDifferenceForSimilarlyCertainTonalities,
-                    createDiff = { ConfigStateDiff(maxProbabilityDifferenceForSimilarlyCertainTonalities = it) },
-                    onChangeState = onChangeState
-                )
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMinUncertaintyForInvalidAnalysisResult),
-                    state = state,
-                    valueValidPair = state.minUncertaintyForInvalidAnalysisResult,
-                    createDiff = { ConfigStateDiff(minUncertaintyForInvalidAnalysisResult = it) },
-                    onChangeState = onChangeState
-                )
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMinScoreForBarBelongingToPassage),
-                    state = state,
-                    valueValidPair = state.minScoreForBarBelongingToPassage,
-                    createDiff = { ConfigStateDiff(minScoreForBarBelongingToPassage = it) },
-                    onChangeState = onChangeState
-                )
-                buildTextFieldItem(
-                    name = string(Strings.ConfigParamMinBarCountForPassageAutoDivision),
-                    state = state,
-                    valueValidPair = state.minBarCountForPassageAutoDivision,
-                    createDiff = { ConfigStateDiff(minBarCountForPassageAutoDivision = it) },
-                    onChangeState = onChangeState
-                )
-                buildKeyShiftSection(
-                    name = string(Strings.ConfigParamKeyShiftForUpperThirdHarmony),
-                    isPositiveShift = true,
-                    controlIdPrefix = "upper",
-                    state = state,
-                    valueList = state.keyShiftForUpperThirdHarmony,
-                    createDiff = { ConfigStateDiff(keyShiftForUpperThirdHarmony = it) },
-                    onChangeState = onChangeState
-                )
-                buildKeyShiftSection(
-                    name = string(Strings.ConfigParamKeyShiftForLowerThirdHarmony),
-                    isPositiveShift = false,
-                    controlIdPrefix = "lower",
-                    state = state,
-                    valueList = state.keyShiftForLowerThirdHarmony,
-                    createDiff = { ConfigStateDiff(keyShiftForLowerThirdHarmony = it) },
-                    onChangeState = onChangeState
-                )
-                buildValidSolfegeSection(
-                    name = string(Strings.ConfigParamValidSolfegeSyllablesInOctave),
-                    state = state,
-                    valueList = state.validSolfegeSyllablesInOctave,
-                    createDiff = { ConfigStateDiff(validSolfegeSyllablesInOctave = it) },
-                    onChangeState = onChangeState
-                )
+            div {
+                DialogContent {
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMinLengthRatioOfNoteForValidBar),
+                        state = state,
+                        valueValidPair = state.minLengthRatioOfNoteForValidBar,
+                        createDiff = { ConfigStateDiff(minLengthRatioOfNoteForValidBar = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMinProbabilityForCertainTonality),
+                        state = state,
+                        valueValidPair = state.minProbabilityForCertainTonality,
+                        createDiff = { ConfigStateDiff(minProbabilityForCertainTonality = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMaxProbabilityDifferenceForSimilarlyCertainTonalities),
+                        state = state,
+                        valueValidPair = state.maxProbabilityDifferenceForSimilarlyCertainTonalities,
+                        createDiff = { ConfigStateDiff(maxProbabilityDifferenceForSimilarlyCertainTonalities = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMinUncertaintyForInvalidAnalysisResult),
+                        state = state,
+                        valueValidPair = state.minUncertaintyForInvalidAnalysisResult,
+                        createDiff = { ConfigStateDiff(minUncertaintyForInvalidAnalysisResult = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMinScoreForBarBelongingToPassage),
+                        state = state,
+                        valueValidPair = state.minScoreForBarBelongingToPassage,
+                        createDiff = { ConfigStateDiff(minScoreForBarBelongingToPassage = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildTextFieldItem(
+                        name = string(Strings.ConfigParamMinBarCountForPassageAutoDivision),
+                        state = state,
+                        valueValidPair = state.minBarCountForPassageAutoDivision,
+                        createDiff = { ConfigStateDiff(minBarCountForPassageAutoDivision = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildKeyShiftSection(
+                        name = string(Strings.ConfigParamKeyShiftForUpperThirdHarmony),
+                        isPositiveShift = true,
+                        controlIdPrefix = "upper",
+                        state = state,
+                        valueList = state.keyShiftForUpperThirdHarmony,
+                        createDiff = { ConfigStateDiff(keyShiftForUpperThirdHarmony = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildKeyShiftSection(
+                        name = string(Strings.ConfigParamKeyShiftForLowerThirdHarmony),
+                        isPositiveShift = false,
+                        controlIdPrefix = "lower",
+                        state = state,
+                        valueList = state.keyShiftForLowerThirdHarmony,
+                        createDiff = { ConfigStateDiff(keyShiftForLowerThirdHarmony = it) },
+                        onChangeState = onChangeState
+                    )
+                    buildValidSolfegeSection(
+                        name = string(Strings.ConfigParamValidSolfegeSyllablesInOctave),
+                        state = state,
+                        valueList = state.validSolfegeSyllablesInOctave,
+                        createDiff = { ConfigStateDiff(validSolfegeSyllablesInOctave = it) },
+                        onChangeState = onChangeState
+                    )
+                }
             }
-        }
-        dialogActions {
-            button {
-                attrs.onClick = { props.close() }
-                +string(Strings.CancelButton)
-            }
-            button {
-                attrs.onClick = { onChangeState(ConfigState.from(Config())) }
-                +string(Strings.ResetAllButton)
-            }
-            button {
-                attrs {
-                    color = Color.secondary
+            DialogActions {
+                Button {
+                    color = ButtonColor.inherit
+                    onClick = { props.close() }
+                    +string(Strings.CancelButton)
+                }
+                Button {
+                    color = ButtonColor.inherit
+                    onClick = { onChangeState(ConfigState.from(Config())) }
+                    +string(Strings.ResetAllButton)
+                }
+                Button {
+                    color = ButtonColor.secondary
                     disabled = state.isValid.not()
                     onClick = { props.saveAndClose(state.toConfig()) }
+                    +string(Strings.ConfirmButton)
                 }
-                +string(Strings.ConfirmButton)
             }
         }
     }
 }
 
-private fun RBuilder.buildTextFieldItem(
+private fun ChildrenBuilder.buildTextFieldItem(
     name: String,
     state: ConfigState,
     valueValidPair: Pair<String, Boolean>,
@@ -227,38 +218,32 @@ private fun RBuilder.buildTextFieldItem(
     onChangeState: StateSetter<ConfigState>
 ) {
     div {
-        formControlLabel {
-            attrs {
-                label = name
-                control = createElement {
-                    textField {
-                        attrs {
-                            value = valueValidPair.first
-                            variant = TextFieldVariant.outlined
-                            style = Style(
-                                marginLeft = "24px",
-                                marginTop = "12px",
-                                marginBottom = "12px",
-                                width = "100px"
-                            )
-                            size = "small"
-                            error = valueValidPair.second.not()
-                            onChange = {
-                                val newValue = it.target.asDynamic().value as String
-                                val diff = createDiff(newValue)
-                                onChangeState(state.update(diff))
-                            }
-                        }
-                    }
-                    size = "small"
-                    labelPlacement = LabelPlacement.start
-                }!!
+        FormControlLabel {
+            label = ReactNode(name)
+            control = TextField.create {
+                value = valueValidPair.first
+                variant = FormControlVariant.outlined
+                style = jso {
+                    marginLeft = 24.px
+                    marginTop = 12.px
+                    marginBottom = 12.px
+                    width = 100.px
+                }
+                size = Size.small
+                error = valueValidPair.second.not()
+                (this.unsafeCast<BaseTextFieldProps>()).variant = FormControlVariant.outlined
+                (this.unsafeCast<OutlinedTextFieldProps>()).onChange = { event ->
+                    val value = event.target.asDynamic().value as String
+                    val diff = createDiff(value)
+                    onChangeState(state.update(diff))
+                }
             }
+            labelPlacement = LabelPlacement.start
         }
     }
 }
 
-private fun RBuilder.buildKeyShiftSection(
+private fun ChildrenBuilder.buildKeyShiftSection(
     name: String,
     isPositiveShift: Boolean,
     controlIdPrefix: String,
@@ -267,97 +252,93 @@ private fun RBuilder.buildKeyShiftSection(
     createDiff: (List<Int>) -> ConfigStateDiff,
     onChangeState: StateSetter<ConfigState>
 ) {
-    styledDiv {
+    div {
         css {
-            margin(top = LinearDimension("16px"))
+            marginTop = 16.px
         }
-        formControlLabel {
-            attrs {
-                label = name
-                control = createElement {
-                    div {
-                        button {
-                            attrs {
-                                size = ButtonSize.small
-                                style = Style(marginLeft = "24px")
-                                variant = ButtonVariant.outlined
-                                onClick = {
-                                    val diff = createDiff(
-                                        if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyDefault
-                                        else Config.keyShiftForLowerThirdHarmonyDefault
-                                    )
-                                    onChangeState(state.update(diff))
-                                }
-                            }
-                            +string(Strings.ConfigEditorUseDefaultButton)
-                        }
-                        button {
-                            attrs {
-                                size = ButtonSize.small
-                                style = Style(marginLeft = "24px")
-                                variant = ButtonVariant.outlined
-                                onClick = {
-                                    val diff = createDiff(
-                                        if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyStandard
-                                        else Config.keyShiftForLowerThirdHarmonyStandard
-                                    )
-                                    onChangeState(state.update(diff))
-                                }
-                            }
-                            +string(Strings.ConfigEditorUseStandardButton)
-                        }
+        FormControlLabel {
+            label = ReactNode(name)
+            control = div.create {
+                Button {
+                    size = Size.small
+                    style = jso { marginLeft = 24.px }
+                    color = ButtonColor.inherit
+                    variant = ButtonVariant.outlined
+                    onClick = {
+                        val diff = createDiff(
+                            if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyDefault
+                            else Config.keyShiftForLowerThirdHarmonyDefault
+                        )
+                        onChangeState(state.update(diff))
                     }
-                    labelPlacement = LabelPlacement.start
-                }!!
+                    +string(Strings.ConfigEditorUseDefaultButton)
+                }
+                Button {
+                    size = Size.small
+                    style = jso { marginLeft = 24.px }
+                    color = ButtonColor.inherit
+                    variant = ButtonVariant.outlined
+                    onClick = {
+                        val diff = createDiff(
+                            if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyStandard
+                            else Config.keyShiftForLowerThirdHarmonyStandard
+                        )
+                        onChangeState(state.update(diff))
+                    }
+                    +string(Strings.ConfigEditorUseStandardButton)
+                }
             }
+            labelPlacement = LabelPlacement.start
         }
     }
-    styledDiv {
+    div {
         css {
-            margin(
-                left = LinearDimension("16px"),
-                right = LinearDimension("16px"),
-                bottom = LinearDimension("24px")
-            )
+            marginLeft = 16.px
+            marginRight = 16.px
+            marginBottom = 24.px
         }
-        formGroup {
-            attrs.row = true
+        FormGroup {
+            row = true
             for (index in Solfege.values().indices) {
                 val controlId = "$controlIdPrefix-$index"
                 val solfege = Solfege.values()[index]
-                formControl {
-                    attrs {
-                        style = Style(width = "90px", marginLeft = "10px", marginRight = "10px")
-                        margin = FormControlMargin.normal
+                FormControl {
+                    style = jso {
+                        width = 90.px
+                        marginLeft = 10.px
+                        marginRight = 10.px
+                    }
+                    margin = FormControlMargin.normal
+                    variant = FormControlVariant.standard
+                    focused = false
+                    size = Size.small
+                    FormLabel {
+                        id = controlId
                         focused = false
-                        size = "small"
-                    }
-                    inputLabel {
-                        attrs {
-                            id = controlId
-                            focused = false
+                        Typography {
+                            variant = TypographyVariant.caption
+                            +solfege.displayName
                         }
-                        +solfege.displayName
                     }
-                    select {
-                        attrs {
-                            labelId = controlId
-                            value = valueList[index].toString()
-                            onChange = { event ->
-                                val newValue = event.target.asDynamic().value as String
-                                val newValueList = valueList.indices.map {
-                                    if (it == index) newValue.toInt() else valueList[it]
-                                }
-                                val diff = createDiff(newValueList)
-                                onChangeState(state.update(diff))
+                    TextField {
+                        id = controlId
+                        select = true
+                        value = valueList[index].toString().unsafeCast<Nothing?>()
+                        (this.unsafeCast<BaseTextFieldProps>()).variant = FormControlVariant.standard
+                        (this.unsafeCast<StandardTextFieldProps>()).onChange = { event ->
+                            val newValue = event.target.asDynamic().value as String
+                            val newValueList = valueList.indices.map {
+                                if (it == index) newValue.toInt() else valueList[it]
                             }
+                            val diff = createDiff(newValueList)
+                            onChangeState(state.update(diff))
                         }
                         Solfege.values().indices.forEach { absDelta ->
                             val delta = if (isPositiveShift) absDelta else -absDelta
                             val targetSolfege = solfege.shift(delta)
                             val deltaDisplayName = if (delta >= 0) "+$delta" else "$delta"
-                            menuItem {
-                                attrs.value = delta.toString()
+                            MenuItem {
+                                value = delta.toString()
                                 +"${targetSolfege.displayName}($deltaDisplayName)"
                             }
                         }
@@ -368,74 +349,62 @@ private fun RBuilder.buildKeyShiftSection(
     }
 }
 
-private fun RBuilder.buildValidSolfegeSection(
+private fun ChildrenBuilder.buildValidSolfegeSection(
     name: String,
     state: ConfigState,
     valueList: List<Boolean>,
     createDiff: (List<Boolean>) -> ConfigStateDiff,
     onChangeState: StateSetter<ConfigState>
 ) {
-    styledDiv {
+    div {
         css {
-            margin(top = LinearDimension("16px"))
+            marginTop = 16.px
         }
-        formControlLabel {
-            attrs {
-                label = name
-                control = createElement {
-                    div {
-                        button {
-                            attrs {
-                                size = ButtonSize.small
-                                style = Style(marginLeft = "24px")
-                                variant = ButtonVariant.outlined
-                                onClick = {
-                                    val diff = createDiff(
-                                        ConfigState.getValidSolfegeSyllablesInOctave(
-                                            Config.validSolfegeSyllablesInOctaveDefault
-                                        )
-                                    )
-                                    onChangeState(state.update(diff))
-                                }
-                            }
-                            +string(Strings.ConfigEditorUseDefaultButton)
-                        }
-                    }
-                }!!
-                labelPlacement = LabelPlacement.start
+        FormControlLabel {
+            label = ReactNode(name)
+            control = Button.create {
+                color = ButtonColor.inherit
+                size = Size.small
+                style = jso { marginLeft = 24.px }
+                variant = ButtonVariant.outlined
+                onClick = {
+                    val diff = createDiff(
+                        ConfigState.getValidSolfegeSyllablesInOctave(
+                            Config.validSolfegeSyllablesInOctaveDefault
+                        )
+                    )
+                    onChangeState(state.update(diff))
+                }
+                +string(Strings.ConfigEditorUseDefaultButton)
             }
+            labelPlacement = LabelPlacement.start
         }
     }
-    styledDiv {
+    div {
         css {
-            margin(
-                left = LinearDimension("16px"),
-                right = LinearDimension("16px"),
-                bottom = LinearDimension("24px")
-            )
+            marginLeft = 16.px
+            marginRight = 16.px
+            marginBottom = 24.px
         }
-        formGroup {
-            attrs.row = true
+        FormGroup {
+            row = true
             Solfege.values().forEach { solfege ->
-                formControlLabel {
-                    attrs {
-                        label = solfege.displayName
-                        control = createElement {
-                            checkbox {
-                                attrs {
-                                    style = Style(marginLeft = "16px")
-                                    checked = valueList[solfege.ordinal]
-                                    onChange = { event ->
-                                        val checked = event.target.asDynamic().checked as Boolean
-                                        val newValueList = valueList.indices.map {
-                                            if (it == solfege.ordinal) checked else valueList[it]
-                                        }
-                                        val diff = createDiff(newValueList)
-                                        onChangeState(state.update(diff))
-                                    }
-                                }
+                FormControlLabel {
+                    label = ReactNode(solfege.displayName)
+                    control = Checkbox.create {
+                        color = CheckboxColor.secondary
+                        style = jso {
+                            marginLeft = 16.px
+                        }
+                        checked = valueList[solfege.ordinal]
+                        onChange = { event, _ ->
+                            val checked = event.target.checked
+                            val newValueList = valueList.indices.map {
+                                if (it == solfege.ordinal) checked else valueList[it]
                             }
-                        }!!
+                            val diff = createDiff(newValueList)
+                            onChangeState(state.update(diff))
+                        }
                     }
                 }
             }
