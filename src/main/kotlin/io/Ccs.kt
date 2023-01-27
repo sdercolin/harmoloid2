@@ -193,7 +193,7 @@ object Ccs {
         unitNode: Element,
         noteShifts: List<NoteShift>,
     ) {
-        val noteShiftsMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+        val noteShiftsMap = noteShifts.associate { it.noteIndex to it.keyDelta }
         unitNode.getSingleElementByTagName("Song")
             .getSingleElementByTagName("Score")
             .getElementListByTagName("Note")

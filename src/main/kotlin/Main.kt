@@ -1,7 +1,6 @@
 import kotlinx.browser.document
 import react.create
 import react.dom.client.createRoot
-import react.dom.render
 import ui.App
 import ui.strings.Language
 import ui.strings.initializeI18n

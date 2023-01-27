@@ -81,14 +81,12 @@ val Importer = scopedFC<ImporterProps> { props, scope ->
             fileFormat == null -> {
                 snackbarError = SnackbarErrorState(true, string(Strings.UnsupportedFileTypeImportError))
             }
-
             !fileFormat.multipleFile && files.count() > 1 -> {
                 snackbarError = SnackbarErrorState(
                     true,
                     string(Strings.MultipleFileImportError, "format" to fileFormat.name),
                 )
             }
-
             else -> {
                 import(files, fileFormat)
             }

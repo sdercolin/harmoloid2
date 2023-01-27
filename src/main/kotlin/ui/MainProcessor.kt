@@ -92,7 +92,7 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
         dialogError = dialogError.copy(isShowing = false)
     }
 
-    var nullableCore: Core? by useState {
+    val nullableCore: Core? by useState {
         try {
             Core(props.project.content, props.config)
                 .also { console.log("core is initialized with config: ${it.config}") }
@@ -114,9 +114,9 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
         }
     }
 
-    nullableCore?.let {
+    nullableCore?.let { core ->
         props.handler.bind(
-            core = it,
+            core = core,
             onShowingProgress = { isProcessing = it },
             onShowingError = ::showErrorDialog,
             scope = scope,

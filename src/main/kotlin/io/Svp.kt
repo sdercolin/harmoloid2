@@ -168,7 +168,7 @@ object Svp {
                 .sortedBy { it.property("onset").asLong }
                 .forEachIndexed { index, note -> noteIndexMap[note] = index }
 
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
 
             newTrackElement = newTrackElement.mapProperty("mainGroup") {
                 it.mapGroupWithNotes(noteShiftMap, noteIndexMap)

@@ -28,9 +28,7 @@ object Ust {
         val results = files.map {
             parseFile(it)
         }
-        val projectName = results
-            .mapNotNull { it.projectName }
-            .firstOrNull()
+        val projectName = results.firstNotNullOfOrNull { it.projectName }
             ?: files.first().nameWithoutExtension
         val tracks = results.mapIndexed { index, result ->
             Track.build(
@@ -151,7 +149,7 @@ object Ust {
 
         for ((harmony, noteShifts) in trackChorus) {
             val harmonyTrackName = harmony.getHarmonicTrackName(track.name)
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
             val sectionContents = originalSections
                 .map { it.second }
                 .mapIndexed { index, section ->

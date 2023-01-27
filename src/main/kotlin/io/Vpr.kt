@@ -29,7 +29,7 @@ import util.readBinary
 import util.withProperty
 
 object Vpr {
-    suspend fun parse(file: File): model.Project {
+    suspend fun parse(file: File): Project {
         val text = readContent(file)
         val projectElement = jsonSerializer.parseToJsonElement(text)
         val timeSignatures = projectElement
@@ -48,7 +48,7 @@ object Vpr {
             ?: listOf(TimeSignature.default)
 
         val tracks = parseTracks(projectElement, timeSignatures)
-        return model.Project(
+        return Project(
             format = Format.Vpr,
             inputFiles = listOf(file),
             name = file.nameWithoutExtension,
@@ -149,7 +149,7 @@ object Vpr {
                 ?.flatMap { it.maybeProperty("notes")?.asList.orEmpty() }
                 ?.forEachIndexed { index, note -> noteIndexMap[note] = index }
 
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
 
             newTrackElement = newTrackElement.mapProperty("parts") { partsElement ->
                 partsElement.asList.map { partElement ->

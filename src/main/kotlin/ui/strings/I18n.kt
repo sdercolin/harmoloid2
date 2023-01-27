@@ -40,7 +40,7 @@ suspend fun initializeI18n(defaultLanguage: Language) = suspendCoroutine<Unit> {
     Unit
 }
 
-suspend fun changeLanguage(code: String) = suspendCoroutine<Unit> { cont ->
+suspend fun changeLanguage(code: String) = suspendCoroutine { cont ->
     i18next.changeLanguage(code)
         .then {
             val languageName = i18next.t(Strings.LanguageDisplayName.name)

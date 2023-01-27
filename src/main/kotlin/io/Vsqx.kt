@@ -86,9 +86,9 @@ object Vsqx {
                 )
             }
             .let {
-                if (it.isEmpty()) {
+                it.ifEmpty {
                     listOf(TimeSignature.default)
-                } else it
+                }
             }
     }
 
@@ -195,7 +195,7 @@ object Vsqx {
         tagNames: TagNames,
         noteShifts: List<NoteShift>,
     ) {
-        val noteShiftsMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+        val noteShiftsMap = noteShifts.associate { it.noteIndex to it.keyDelta }
         trackNode.getElementListByTagName(tagNames.musicalPart)
             .flatMap { it.getElementListByTagName(tagNames.note) }
             .forEachIndexed { index, noteNode ->
