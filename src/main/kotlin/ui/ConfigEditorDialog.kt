@@ -4,6 +4,7 @@ import com.sdercolin.harmoloid.core.Config
 import com.sdercolin.harmoloid.core.model.Solfege
 import csstype.Color
 import csstype.px
+import emotion.react.css
 import external.saveAs
 import io.ConfigJson
 import kotlinx.browser.window
@@ -50,7 +51,6 @@ import react.Props
 import react.ReactNode
 import react.StateSetter
 import react.create
-import react.css.css
 import react.dom.html.ReactHTML.div
 import react.useState
 import ui.ConfigState.ConfigStateDiff

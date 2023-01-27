@@ -13,6 +13,7 @@ import csstype.AlignSelf
 import csstype.Display
 import csstype.VerticalAlign
 import csstype.px
+import emotion.react.css
 import kotlinx.js.jso
 import model.ExportResult
 import model.MainHandler
@@ -51,7 +52,6 @@ import react.ElementType
 import react.Props
 import react.ReactNode
 import react.create
-import react.css.css
 import react.dom.html.ReactHTML.div
 import react.useEffect
 import react.useState

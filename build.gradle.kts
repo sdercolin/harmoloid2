@@ -1,6 +1,6 @@
 plugins {
-    kotlin("js") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("js") version "1.7.20"
+    kotlin("plugin.serialization") version "1.7.20"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
@@ -19,7 +19,7 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
 fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
-val kotlinWrappersVersion = "1.0.0-pre.343"
+val kotlinWrappersVersion = "1.0.0-pre.354"
 
 dependencies {
     // Core
@@ -36,7 +36,7 @@ dependencies {
     implementation(kotlinw("react-dom"))
     implementation(kotlinw("mui"))
     implementation(kotlinw("mui-icons"))
-    implementation(kotlinw("react-css:17.0.2-pre.298-kotlin-1.6.10"))
+    implementation(kotlinw("react-css:18.0.0-pre.331-kotlin-1.6.20"))
 
     // React components
     implementation(npm("react-file-drop", "3.1.2"))

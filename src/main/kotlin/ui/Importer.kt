@@ -3,6 +3,7 @@ package ui
 import com.sdercolin.harmoloid.core.Core
 import com.sdercolin.harmoloid.core.exception.NoteOverlappingException
 import csstype.px
+import emotion.react.css
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import model.Format
@@ -13,7 +14,6 @@ import mui.material.styles.TypographyVariant
 import org.w3c.files.File
 import react.ChildrenBuilder
 import react.Props
-import react.css.css
 import react.dom.html.ReactHTML.div
 import react.useState
 import ui.common.DialogErrorState

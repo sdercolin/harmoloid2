@@ -13,6 +13,7 @@ import csstype.number
 import csstype.px
 import csstype.rem
 import csstype.vh
+import emotion.react.css
 import io.ConfigJson
 import kotlinx.browser.window
 import kotlinx.js.jso
@@ -45,7 +46,6 @@ import react.ChildrenBuilder
 import react.FC
 import react.Props
 import react.ReactNode
-import react.css.css
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.span
 import react.useState

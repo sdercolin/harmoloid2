@@ -2,6 +2,7 @@ package ui
 
 import csstype.Color
 import csstype.px
+import emotion.react.css
 import external.saveAs
 import kotlinx.js.jso
 import model.ExportResult
@@ -15,7 +16,6 @@ import mui.material.styles.TypographyVariant
 import mui.system.sx
 import react.FC
 import react.Props
-import react.css.css
 import react.dom.html.ReactHTML.div
 import ui.strings.Strings
 import ui.strings.string
