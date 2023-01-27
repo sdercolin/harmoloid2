@@ -215,7 +215,6 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
                     }
                     Collapse {
                         `in` = trackState.expanded != Expanded.None
-                        // unmountOnExit = true
                         when (trackState.expanded) {
                             Expanded.None -> Unit
                             Expanded.MarkTonality -> buildTonalityMarking(context, trackState)
