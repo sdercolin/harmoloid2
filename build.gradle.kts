@@ -36,7 +36,6 @@ dependencies {
     implementation(kotlinw("react-dom"))
     implementation(kotlinw("mui"))
     implementation(kotlinw("mui-icons"))
-    implementation(kotlinw("react-css:18.0.0-pre.331-kotlin-1.6.20"))
 
     // React components
     implementation(npm("react-file-drop", "3.1.2"))
@@ -61,7 +60,7 @@ dependencies {
 }
 
 kotlin {
-    js(LEGACY) {
+    js {
         browser {
             binaries.executable()
             commonWebpackConfig {
@@ -79,4 +78,8 @@ kotlin {
             }
         }
     }
+}
+
+rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+    versions.webpackCli.version = "4.10.0"
 }
