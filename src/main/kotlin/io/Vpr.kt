@@ -41,7 +41,7 @@ object Vpr {
                 TimeSignature(
                     measurePosition = it.property("bar").asInt,
                     numerator = it.property("numer").asInt,
-                    denominator = it.property("denom").asInt
+                    denominator = it.property("denom").asInt,
                 )
             }
             ?.takeIf { it.isNotEmpty() }
@@ -52,7 +52,7 @@ object Vpr {
             format = Format.Vpr,
             inputFiles = listOf(file),
             name = file.nameWithoutExtension,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
@@ -71,14 +71,14 @@ object Vpr {
 
     private fun parseTracks(
         projectElement: JsonElement,
-        timeSignatures: List<TimeSignature>
+        timeSignatures: List<TimeSignature>,
     ): List<Track> = projectElement.property("tracks").asList
         .mapIndexed { index, track ->
             Track.build(
                 index,
                 name = track.maybeProperty("name")?.asString ?: "Track ${index + 1}",
                 notes = parseNotes(track),
-                timeSignatures
+                timeSignatures,
             )
         }
 
@@ -93,7 +93,7 @@ object Vpr {
                     tickOn = tickOffset + note.property("pos").asLong,
                     tickOff = tickOffset + note.property("pos").asLong + note.property("duration").asLong,
                     lyric = note.property("lyric").asStringOrNull.takeUnless { it.isNullOrBlank() } ?: "",
-                    key = note.property("number").asInt
+                    key = note.property("number").asInt,
                 )
             }
 
@@ -133,14 +133,14 @@ object Vpr {
 
     private fun JsonElement.mapTrackElementsWithGroups(
         trackModel: Track,
-        trackChorus: Map<HarmonicType, List<NoteShift>>
+        trackChorus: Map<HarmonicType, List<NoteShift>>,
     ): List<JsonElement> {
         if (trackModel.bars.isEmpty()) return listOf()
         if (trackChorus.isEmpty()) return listOf()
         return trackChorus.map { (harmony, noteShifts) ->
             var newTrackElement = withProperty(
                 "name",
-                harmony.getHarmonicTrackName(trackModel.name)
+                harmony.getHarmonicTrackName(trackModel.name),
             )
 
             // Collect all notes with index
@@ -169,7 +169,7 @@ object Vpr {
 
     private val possibleJsonPaths = listOf(
         "Project\\sequence.json",
-        "Project/sequence.json"
+        "Project/sequence.json",
     )
 
     private val jsonSerializer = Json {

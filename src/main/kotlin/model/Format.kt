@@ -6,7 +6,7 @@ enum class Format(
     val extension: String,
     val multipleFile: Boolean,
     val parser: suspend (List<File>) -> Project,
-    val generator: suspend (Project) -> ExportResult
+    val generator: suspend (Project) -> ExportResult,
 ) {
     Vsq3(
         ".vsqx",
@@ -16,7 +16,7 @@ enum class Format(
         },
         generator = {
             io.Vsqx.generate(it, Vsq3)
-        }
+        },
     ),
     Vsq4(
         ".vsqx",
@@ -26,7 +26,7 @@ enum class Format(
         },
         generator = {
             io.Vsqx.generate(it, Vsq4)
-        }
+        },
     ),
     Vpr(
         ".vpr",
@@ -36,7 +36,7 @@ enum class Format(
         },
         generator = {
             io.Vpr.generate(it)
-        }
+        },
     ),
     Ust(
         ".ust",
@@ -46,7 +46,7 @@ enum class Format(
         },
         generator = {
             io.Ust.generate(it)
-        }
+        },
     ),
     Ccs(
         ".ccs",
@@ -56,7 +56,7 @@ enum class Format(
         },
         generator = {
             io.Ccs.generate(it)
-        }
+        },
     ),
     Svp(
         ".svp",
@@ -66,6 +66,6 @@ enum class Format(
         },
         generator = {
             io.Svp.generate(it)
-        }
+        },
     );
 }

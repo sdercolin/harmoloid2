@@ -9,7 +9,6 @@ import csstype.Length
 import csstype.Margin
 import csstype.NamedColor
 import csstype.Position
-import csstype.Width
 import csstype.number
 import csstype.px
 import csstype.rem
@@ -101,7 +100,7 @@ val App = FC<Props> {
                     maxWidth = "xl"
                     buildAppBar(
                         onChangeLanguage = { language = it },
-                        onOpenConfigEditor = { isShowingConfigEditorDialog = true }
+                        onOpenConfigEditor = { isShowingConfigEditorDialog = true },
                     )
                     buildBody(
                         handler = handler,
@@ -116,7 +115,7 @@ val App = FC<Props> {
                         onFinish = {
                             pushPage(Page.Export(it))
                         },
-                        restart = ::restart
+                        restart = ::restart,
                     )
                 }
             }
@@ -209,7 +208,7 @@ private fun ChildrenBuilder.buildBody(
     config: Config,
     onImported: (Project) -> Unit,
     onFinish: (ExportResult) -> Unit,
-    restart: () -> Unit
+    restart: () -> Unit,
 ) {
     div {
         css {
@@ -242,7 +241,6 @@ private fun ChildrenBuilder.buildBody(
         }
     }
 }
-
 
 private fun ChildrenBuilder.buildFabs(
     pageStack: List<Page>,

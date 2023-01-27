@@ -6,7 +6,7 @@ import com.sdercolin.harmoloid.core.model.TICKS_IN_FULL_NOTE
 
 class TickCounter(
     private val tickRate: Double = 1.0,
-    private val ticksInFullNote: Long = TICKS_IN_FULL_NOTE.toLong()
+    private val ticksInFullNote: Long = TICKS_IN_FULL_NOTE.toLong(),
 ) {
 
     var tick = 0L

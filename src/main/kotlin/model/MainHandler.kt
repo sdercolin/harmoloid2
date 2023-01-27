@@ -41,7 +41,7 @@ class MainHandler {
                     content = core.content,
                     chorus = core.content.tracks.indices.map { trackIndex ->
                         core.getAllChorusTracks(trackIndex)
-                    }
+                    },
                 )
                 val result = requireNotNull(project).format.generator.invoke(exportProject)
                 console.log(result)

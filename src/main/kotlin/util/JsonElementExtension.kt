@@ -43,7 +43,7 @@ fun Any?.json(): JsonElement =
         is Boolean -> this.json()
         is String -> this.json()
         else -> throw NotImplementedError(
-            "${this::class.simpleName ?: this.toString()}.json() is not implemented."
+            "${this::class.simpleName ?: this.toString()}.json() is not implemented.",
         )
     }
 

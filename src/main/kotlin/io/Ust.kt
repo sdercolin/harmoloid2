@@ -37,14 +37,14 @@ object Ust {
                 index,
                 name = result.file.nameWithoutExtension,
                 result.notes,
-                timeSignatures = listOf(TimeSignature.default)
+                timeSignatures = listOf(TimeSignature.default),
             )
         }
         return Project(
             format = Format.Ust,
             inputFiles = files,
             name = projectName,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
@@ -83,8 +83,8 @@ object Ust {
                             key = pendingNoteKey,
                             lyric = pendingNoteLyric,
                             tickOn = pendingNoteTickOn,
-                            tickOff = pendingNoteTickOff
-                        )
+                            tickOff = pendingNoteTickOff,
+                        ),
                     )
                 }
                 pendingNoteKey = null
@@ -133,7 +133,7 @@ object Ust {
     private fun generateTrackContentsWithNames(
         originalContent: String,
         track: Track,
-        trackChorus: Map<HarmonicType, List<NoteShift>>
+        trackChorus: Map<HarmonicType, List<NoteShift>>,
     ): List<Pair<String, String>> {
         val result = mutableListOf<Pair<String, String>>()
         if (trackChorus.isEmpty() || track.notes.isEmpty()) return result
@@ -195,7 +195,7 @@ object Ust {
     private data class FileParseResult(
         val file: File,
         val projectName: String?,
-        val notes: List<Note>
+        val notes: List<Note>,
     )
 
     private const val LINE_SEPARATOR = "\r\n"

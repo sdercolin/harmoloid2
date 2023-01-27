@@ -10,5 +10,5 @@ data class Project(
     val inputFiles: List<File>,
     val name: String,
     val content: Content,
-    val chorus: List<Map<HarmonicType, List<NoteShift>>> = listOf()
+    val chorus: List<Map<HarmonicType, List<NoteShift>>> = listOf(),
 )

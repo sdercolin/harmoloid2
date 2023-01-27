@@ -63,13 +63,13 @@ object Vsqx {
             format = format,
             inputFiles = listOf(file),
             name = projectName,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
     private fun parseTimeSignatures(
         masterTrack: Element,
-        tagNames: TagNames
+        tagNames: TagNames,
     ): List<TimeSignature> {
         return masterTrack.getElementListByTagName(tagNames.timeSig, allowEmpty = false)
             .mapNotNull {
@@ -82,7 +82,7 @@ object Vsqx {
                 TimeSignature(
                     measurePosition = posMes,
                     numerator = nume,
-                    denominator = denomi
+                    denominator = denomi,
                 )
             }
             .let {
@@ -96,7 +96,7 @@ object Vsqx {
         trackNode: Element,
         trackIndex: Int,
         tagNames: TagNames,
-        timeSignatures: List<TimeSignature>
+        timeSignatures: List<TimeSignature>,
     ): Track {
         val trackName = trackNode.getSingleElementByTagNameOrNull(tagNames.trackName)?.innerValueOrNull
             ?: "Track ${trackIndex + 1}"
@@ -116,14 +116,14 @@ object Vsqx {
                     key = key,
                     tickOn = tickOn + tickOffset,
                     tickOff = tickOn + tickOffset + length,
-                    lyric = lyric
+                    lyric = lyric,
                 )
             }
         return Track.build(
             trackIndex,
             trackName,
             notes,
-            timeSignatures
+            timeSignatures,
         )
     }
 
@@ -140,7 +140,7 @@ object Vsqx {
         val name = project.name + format.extension
         return ExportResult(
             blob,
-            name
+            name,
         )
     }
 
@@ -193,7 +193,7 @@ object Vsqx {
     private fun applyNoteShiftsToTrackNode(
         trackNode: Element,
         tagNames: TagNames,
-        noteShifts: List<NoteShift>
+        noteShifts: List<NoteShift>,
     ) {
         val noteShiftsMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
         trackNode.getElementListByTagName(tagNames.musicalPart)
@@ -225,7 +225,7 @@ object Vsqx {
         val lyric: String = "lyric",
         val mixer: String = "mixer",
         val vsUnit: String = "vsUnit",
-        val trackNum: String = "vsTrackNo"
+        val trackNum: String = "vsTrackNo",
     ) {
         Vsq3,
         Vsq4(
@@ -238,7 +238,7 @@ object Vsqx {
             duration = "dur",
             noteNum = "n",
             lyric = "y",
-            trackNum = "tNo"
+            trackNum = "tNo",
         )
     }
 }

@@ -11,7 +11,6 @@ import com.sdercolin.harmoloid.core.model.TrackTonalityAnalysisResult
 import com.sdercolin.harmoloid.core.util.update
 import csstype.AlignSelf
 import csstype.Display
-import csstype.FontSize
 import csstype.VerticalAlign
 import csstype.px
 import kotlinx.js.jso
@@ -85,7 +84,7 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
         dialogError = DialogErrorState(
             isShowing = true,
             title = title,
-            message = t.toString()
+            message = t.toString(),
         )
     }
 
@@ -122,7 +121,7 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
             onShowingError = ::showErrorDialog,
             scope = scope,
             onFinish = props.onFinish,
-            project = props.project
+            project = props.project,
         )
     }
 
@@ -173,7 +172,7 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
                         +string(
                             Strings.TrackSummary,
                             "barCount" to trackState.track.bars.size.toString(),
-                            "noteCount" to trackState.track.notes.size.toString()
+                            "noteCount" to trackState.track.notes.size.toString(),
                         )
                     }
                 }
@@ -183,9 +182,9 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
                             color = ButtonColor.inherit
                             onClick = {
                                 val requestedExpanded =
-                                    if (trackState.expanded == Expanded.MarkTonality)
+                                    if (trackState.expanded == Expanded.MarkTonality) {
                                         Expanded.None
-                                    else Expanded.MarkTonality
+                                    } else Expanded.MarkTonality
                                 toggleCollapse(trackState.index, requestedExpanded)
                             }
                             if (trackState.track.isTonalityMarked) CheckCircle()
@@ -199,9 +198,9 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
                             color = ButtonColor.inherit
                             onClick = {
                                 val requestedExpanded =
-                                    if (trackState.expanded == Expanded.SelectHarmony)
+                                    if (trackState.expanded == Expanded.SelectHarmony) {
                                         Expanded.None
-                                    else Expanded.SelectHarmony
+                                    } else Expanded.SelectHarmony
                                 toggleCollapse(trackState.index, requestedExpanded)
                             }
                             disabled = !trackState.track.isTonalityMarked
@@ -232,12 +231,12 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
         isShowing = snackbarError.isShowing,
         message = snackbarError.message,
         close = { closeMessageBar() },
-        color = AlertColor.error
+        color = AlertColor.error,
     )
 
     errorDialog(
         state = dialogError,
-        close = { closeErrorDialog() }
+        close = { closeErrorDialog() },
     )
 
     progress(isProcessing)
@@ -280,7 +279,7 @@ private fun ChildrenBuilder.buildTonalityMarking(
 
                 val isStartInputError = trackCard.errorPassageStartInputs.containsKey(passage.index)
                 val isStartInputDisabled = passage.index == 0 ||
-                        (!isStartInputError && trackCard.errorPassageStartInputs.isNotEmpty())
+                    (!isStartInputError && trackCard.errorPassageStartInputs.isNotEmpty())
                 val start = trackCard.errorPassageStartInputs[passage.index]
                     ?: passage.bars.firstOrNull()?.number?.toString()
                 val end = passage.bars.lastOrNull()?.number?.toString()
@@ -299,7 +298,7 @@ private fun ChildrenBuilder.buildTonalityMarking(
                             input = event.target.asDynamic().value as String,
                             trackIndex = trackCard.index,
                             passageIndex = passage.index,
-                            passages = passages
+                            passages = passages,
                         )
                     }
                 }
@@ -488,7 +487,7 @@ private fun ChildrenBuilder.buildHarmonySelection(
                             HarmonicType.LowerSixth -> Strings.HarmonicTypeLowerSixth
                             HarmonicType.UpperOctave -> Strings.HarmonicTypeUpperOctave
                             HarmonicType.LowerOctave -> Strings.HarmonicTypeLowerOctave
-                        }
+                        },
                     ).let { ReactNode(it) }
                     control = Checkbox.create {
                         checked = harmonies.contains(harmony)
@@ -556,7 +555,7 @@ private fun Context.onChangePassageStartInput(
     input: String,
     trackIndex: Int,
     passageIndex: Int,
-    passages: List<Passage>
+    passages: List<Passage>,
 ) {
     val barIndex = input.toIntOrNull()?.minus(1)
     val barSize = trackCards[trackIndex].track.bars.size
@@ -582,7 +581,7 @@ private fun Context.onChangePassageStartInput(
             errorInputs.remove(passageIndex)
             trackCard.copy(
                 errorPassageStartInputs = errorInputs.toMap(),
-                track = trackCard.track.copy(passages = newPassages.toList())
+                track = trackCard.track.copy(passages = newPassages.toList()),
             )
         }
     }
@@ -593,12 +592,12 @@ private fun Context.addPassage(trackIndex: Int, passages: List<Passage>) {
     val updatedFinalPassage = finalPassage.copy(bars = finalPassage.bars.take(1))
     val newPassage = Passage(
         index = finalPassage.index + 1,
-        bars = finalPassage.bars.drop(1)
+        bars = finalPassage.bars.drop(1),
     )
     val newPassages = passages.dropLast(1) + updatedFinalPassage + newPassage
     updateTrack(trackIndex) { trackCard ->
         trackCard.copy(
-            track = trackCard.track.copy(passages = newPassages.toList())
+            track = trackCard.track.copy(passages = newPassages.toList()),
         )
     }
 }
@@ -606,12 +605,12 @@ private fun Context.addPassage(trackIndex: Int, passages: List<Passage>) {
 private fun Context.mergeLastTwoPassages(trackIndex: Int, passages: List<Passage>) {
     val lastTwoPassages = passages.takeLast(2)
     val newFinalPassage = lastTwoPassages.first().copy(
-        bars = lastTwoPassages.first().bars + lastTwoPassages.last().bars
+        bars = lastTwoPassages.first().bars + lastTwoPassages.last().bars,
     )
     val newPassages = passages.dropLast(2) + newFinalPassage
     updateTrack(trackIndex) { trackCard ->
         trackCard.copy(
-            track = trackCard.track.copy(passages = newPassages.toList())
+            track = trackCard.track.copy(passages = newPassages.toList()),
         )
     }
 }
@@ -619,7 +618,7 @@ private fun Context.mergeLastTwoPassages(trackIndex: Int, passages: List<Passage
 private fun Context.resetPassages(trackIndex: Int) {
     updateTrack(trackIndex) { trackCard ->
         trackCard.copy(
-            track = trackCard.track.passagesInitialized()
+            track = trackCard.track.passagesInitialized(),
         )
     }
 }
@@ -627,7 +626,7 @@ private fun Context.resetPassages(trackIndex: Int) {
 private fun Context.resetHarmonies(trackIndex: Int) {
     updateTrack(trackIndex) { trackCard ->
         trackCard.copy(
-            track = trackCard.track.copy(harmonies = setOf())
+            track = trackCard.track.copy(harmonies = setOf()),
         )
     }
 }
@@ -636,7 +635,7 @@ private fun Context.setTonality(
     tonalityText: String,
     trackIndex: Int,
     passages: List<Passage>,
-    passageIndex: Int
+    passageIndex: Int,
 ) {
     val tonality = Tonality.values().find { it.displayName == tonalityText }
     updateTrack(trackIndex) { trackCard ->
@@ -644,8 +643,8 @@ private fun Context.setTonality(
             track = trackCard.track.copy(
                 passages = passages.update<Passage>(passageIndex) {
                     it.copy(tonality = tonality)
-                }
-            )
+                },
+            ),
         )
     }
 }
@@ -657,8 +656,8 @@ private fun Context.selectHarmony(trackIndex: Int, harmonicType: HarmonicType, i
         else newHarmonies.remove(harmonicType)
         trackCard.copy(
             track = trackCard.track.copy(
-                harmonies = newHarmonies.toSet()
-            )
+                harmonies = newHarmonies.toSet(),
+            ),
         )
     }
 }
@@ -726,18 +725,18 @@ private fun Context.handleTonalityAnalysisResult(result: TrackTonalityAnalysisRe
                     is PassageTonalityAnalysisResult.SimilarlyCertain -> string(
                         Strings.PassageAnalysisWarningSimilarlyCertain,
                         "number" to (index + 1).toString(),
-                        "description" to passageResult.tonalities.joinToString("/") { it.displayName }
+                        "description" to passageResult.tonalities.joinToString("/") { it.displayName },
                     )
 
                     is PassageTonalityAnalysisResult.Unknown -> string(
                         Strings.PassageAnalysisWarningUnknown,
-                        "number" to (index + 1).toString()
+                        "number" to (index + 1).toString(),
                     )
                 }
             }
             if (warnings.isNotEmpty()) {
                 showMessageBar(
-                    (listOf(string(Strings.PassageAnalysisWarning)) + warnings).joinToString("\n")
+                    (listOf(string(Strings.PassageAnalysisWarning)) + warnings).joinToString("\n"),
                 )
             }
         }
@@ -756,7 +755,7 @@ private fun Context.updateTrackUsingCoreData(trackIndex: Int) {
 private fun Context.onUpdateTrack(
     trackIndex: Int,
     newTrack: Track,
-    fromCore: Boolean = false
+    fromCore: Boolean = false,
 ) {
     if (!fromCore) {
         core.savePassages(trackIndex, requireNotNull(newTrack.passages))
@@ -768,7 +767,6 @@ private fun Context.onUpdateTrack(
 private fun TrackTonalityAnalysisResult.Failure.getMessage() = when (this) {
     TrackTonalityAnalysisResult.Failure.TrackIsTooShort -> string(Strings.TrackToShortMessage)
 }
-
 
 external interface MainProcessorProps : Props {
     var handler: MainHandler
@@ -783,7 +781,7 @@ private data class TrackCardState(
     val track: Track,
     val errorPassageStartInputs: Map<Int, String>,
     val errorPassageTonalityInputs: Map<Int, String>,
-    val expanded: Expanded
+    val expanded: Expanded,
 ) {
     enum class Expanded {
         None,
@@ -799,5 +797,5 @@ private class Context(
     val project: Project,
     val onUpdateProject: (Project) -> Unit,
     val showMessageBar: (String) -> Unit,
-    val showError: (String, Throwable) -> Unit
+    val showError: (String, Throwable) -> Unit,
 )

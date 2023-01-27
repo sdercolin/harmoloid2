@@ -55,7 +55,7 @@ val CustomFooter = FC<Props> {
                 onClick = { props.onOpenEmbeddedPage(Strings.GoogleAnalyticsUsageInfoUrl) }
                 +"About Usage of Google Analytics"
             }
-           */
+             */
         }
     }
 }

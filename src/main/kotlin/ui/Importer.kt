@@ -30,7 +30,6 @@ import util.runCatchingCancellable
 import util.toList
 import util.waitFileSelection
 
-
 val Importer = scopedFC<ImporterProps> { props, scope ->
     var isLoading by useState(false)
     var snackbarError by useState(SnackbarErrorState())
@@ -62,14 +61,14 @@ val Importer = scopedFC<ImporterProps> { props, scope ->
                         string(
                             Strings.NoteOverlappingImportError,
                             "trackNumber" to (t.trackIndex + 1).toString(),
-                            "notesDescription" to t.notes.toString()
-                        )
+                            "notesDescription" to t.notes.toString(),
+                        ),
                     )
                 } else {
                     dialogError = DialogErrorState(
                         isShowing = true,
                         title = string(Strings.ImportErrorDialogTitle),
-                        message = t.message ?: t.toString()
+                        message = t.message ?: t.toString(),
                     )
                 }
             }
@@ -81,13 +80,12 @@ val Importer = scopedFC<ImporterProps> { props, scope ->
         when {
             fileFormat == null -> {
                 snackbarError = SnackbarErrorState(true, string(Strings.UnsupportedFileTypeImportError))
-
             }
 
             !fileFormat.multipleFile && files.count() > 1 -> {
                 snackbarError = SnackbarErrorState(
                     true,
-                    string(Strings.MultipleFileImportError, "format" to fileFormat.name)
+                    string(Strings.MultipleFileImportError, "format" to fileFormat.name),
                 )
             }
 

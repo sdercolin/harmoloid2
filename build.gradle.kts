@@ -1,7 +1,8 @@
 plugins {
     kotlin("js") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
+    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
 
 group = "com.sdercolin.harmoloid"
@@ -11,7 +12,8 @@ repositories {
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    version.set("0.36.0")
+    version.set("0.45.2")
+    enableExperimentalRules.set(true)
 }
 
 fun kotlinw(target: String): String =
@@ -37,11 +39,7 @@ dependencies {
     implementation(kotlinw("react-css:17.0.2-pre.298-kotlin-1.6.10"))
 
     // React components
-    implementation(npm("@material-ui/core", "4.11.4"))
-    implementation(npm("@material-ui/icons", "4.11.2"))
-    implementation(npm("@material-ui/lab", "4.0.0-alpha.58"))
     implementation(npm("react-file-drop", "3.1.2"))
-    implementation(npm("react-is", "17.0.2"))
     implementation(npm("react-markdown", "5.0.3"))
 
     // Localization
@@ -81,9 +79,4 @@ kotlin {
             }
         }
     }
-}
-
-// Fixes webpack-cli incompatibility by pinning the newest version.
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
 }

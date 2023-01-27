@@ -124,42 +124,42 @@ val ConfigEditorDialog = FC<ConfigEditorDialogProps>("ConfigEditorDialog") { pro
                         state = state,
                         valueValidPair = state.minLengthRatioOfNoteForValidBar,
                         createDiff = { ConfigStateDiff(minLengthRatioOfNoteForValidBar = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildTextFieldItem(
                         name = string(Strings.ConfigParamMinProbabilityForCertainTonality),
                         state = state,
                         valueValidPair = state.minProbabilityForCertainTonality,
                         createDiff = { ConfigStateDiff(minProbabilityForCertainTonality = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildTextFieldItem(
                         name = string(Strings.ConfigParamMaxProbabilityDifferenceForSimilarlyCertainTonalities),
                         state = state,
                         valueValidPair = state.maxProbabilityDifferenceForSimilarlyCertainTonalities,
                         createDiff = { ConfigStateDiff(maxProbabilityDifferenceForSimilarlyCertainTonalities = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildTextFieldItem(
                         name = string(Strings.ConfigParamMinUncertaintyForInvalidAnalysisResult),
                         state = state,
                         valueValidPair = state.minUncertaintyForInvalidAnalysisResult,
                         createDiff = { ConfigStateDiff(minUncertaintyForInvalidAnalysisResult = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildTextFieldItem(
                         name = string(Strings.ConfigParamMinScoreForBarBelongingToPassage),
                         state = state,
                         valueValidPair = state.minScoreForBarBelongingToPassage,
                         createDiff = { ConfigStateDiff(minScoreForBarBelongingToPassage = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildTextFieldItem(
                         name = string(Strings.ConfigParamMinBarCountForPassageAutoDivision),
                         state = state,
                         valueValidPair = state.minBarCountForPassageAutoDivision,
                         createDiff = { ConfigStateDiff(minBarCountForPassageAutoDivision = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildKeyShiftSection(
                         name = string(Strings.ConfigParamKeyShiftForUpperThirdHarmony),
@@ -168,7 +168,7 @@ val ConfigEditorDialog = FC<ConfigEditorDialogProps>("ConfigEditorDialog") { pro
                         state = state,
                         valueList = state.keyShiftForUpperThirdHarmony,
                         createDiff = { ConfigStateDiff(keyShiftForUpperThirdHarmony = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildKeyShiftSection(
                         name = string(Strings.ConfigParamKeyShiftForLowerThirdHarmony),
@@ -177,14 +177,14 @@ val ConfigEditorDialog = FC<ConfigEditorDialogProps>("ConfigEditorDialog") { pro
                         state = state,
                         valueList = state.keyShiftForLowerThirdHarmony,
                         createDiff = { ConfigStateDiff(keyShiftForLowerThirdHarmony = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                     buildValidSolfegeSection(
                         name = string(Strings.ConfigParamValidSolfegeSyllablesInOctave),
                         state = state,
                         valueList = state.validSolfegeSyllablesInOctave,
                         createDiff = { ConfigStateDiff(validSolfegeSyllablesInOctave = it) },
-                        onChangeState = onChangeState
+                        onChangeState = onChangeState,
                     )
                 }
             }
@@ -215,7 +215,7 @@ private fun ChildrenBuilder.buildTextFieldItem(
     state: ConfigState,
     valueValidPair: Pair<String, Boolean>,
     createDiff: (String) -> ConfigStateDiff,
-    onChangeState: StateSetter<ConfigState>
+    onChangeState: StateSetter<ConfigState>,
 ) {
     div {
         FormControlLabel {
@@ -250,7 +250,7 @@ private fun ChildrenBuilder.buildKeyShiftSection(
     state: ConfigState,
     valueList: List<Int>,
     createDiff: (List<Int>) -> ConfigStateDiff,
-    onChangeState: StateSetter<ConfigState>
+    onChangeState: StateSetter<ConfigState>,
 ) {
     div {
         css {
@@ -267,7 +267,7 @@ private fun ChildrenBuilder.buildKeyShiftSection(
                     onClick = {
                         val diff = createDiff(
                             if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyDefault
-                            else Config.keyShiftForLowerThirdHarmonyDefault
+                            else Config.keyShiftForLowerThirdHarmonyDefault,
                         )
                         onChangeState(state.update(diff))
                     }
@@ -281,7 +281,7 @@ private fun ChildrenBuilder.buildKeyShiftSection(
                     onClick = {
                         val diff = createDiff(
                             if (isPositiveShift) Config.keyShiftForUpperThirdHarmonyStandard
-                            else Config.keyShiftForLowerThirdHarmonyStandard
+                            else Config.keyShiftForLowerThirdHarmonyStandard,
                         )
                         onChangeState(state.update(diff))
                     }
@@ -354,7 +354,7 @@ private fun ChildrenBuilder.buildValidSolfegeSection(
     state: ConfigState,
     valueList: List<Boolean>,
     createDiff: (List<Boolean>) -> ConfigStateDiff,
-    onChangeState: StateSetter<ConfigState>
+    onChangeState: StateSetter<ConfigState>,
 ) {
     div {
         css {
@@ -370,8 +370,8 @@ private fun ChildrenBuilder.buildValidSolfegeSection(
                 onClick = {
                     val diff = createDiff(
                         ConfigState.getValidSolfegeSyllablesInOctave(
-                            Config.validSolfegeSyllablesInOctaveDefault
-                        )
+                            Config.validSolfegeSyllablesInOctaveDefault,
+                        ),
                     )
                     onChangeState(state.update(diff))
                 }
@@ -438,16 +438,16 @@ data class ConfigState(
     val minBarCountForPassageAutoDivision: Pair<String, Boolean>,
     val keyShiftForUpperThirdHarmony: List<Int>,
     val keyShiftForLowerThirdHarmony: List<Int>,
-    val validSolfegeSyllablesInOctave: List<Boolean>
+    val validSolfegeSyllablesInOctave: List<Boolean>,
 ) {
 
     val isValid: Boolean
         get() = minLengthRatioOfNoteForValidBar.second &&
-                minProbabilityForCertainTonality.second &&
-                maxProbabilityDifferenceForSimilarlyCertainTonalities.second &&
-                minUncertaintyForInvalidAnalysisResult.second &&
-                minScoreForBarBelongingToPassage.second &&
-                minBarCountForPassageAutoDivision.second
+            minProbabilityForCertainTonality.second &&
+            maxProbabilityDifferenceForSimilarlyCertainTonalities.second &&
+            minUncertaintyForInvalidAnalysisResult.second &&
+            minScoreForBarBelongingToPassage.second &&
+            minBarCountForPassageAutoDivision.second
 
     data class ConfigStateDiff(
         val minLengthRatioOfNoteForValidBar: String? = null,
@@ -458,7 +458,7 @@ data class ConfigState(
         val minBarCountForPassageAutoDivision: String? = null,
         val keyShiftForUpperThirdHarmony: List<Int>? = null,
         val keyShiftForLowerThirdHarmony: List<Int>? = null,
-        val validSolfegeSyllablesInOctave: List<Boolean>? = null
+        val validSolfegeSyllablesInOctave: List<Boolean>? = null,
     )
 
     fun update(diff: ConfigStateDiff): ConfigState {
@@ -475,14 +475,14 @@ data class ConfigState(
             val valid = diff.maxProbabilityDifferenceForSimilarlyCertainTonalities.isValidDouble(0.0, 1.0)
             result = result.copy(
                 maxProbabilityDifferenceForSimilarlyCertainTonalities =
-                diff.maxProbabilityDifferenceForSimilarlyCertainTonalities to valid
+                diff.maxProbabilityDifferenceForSimilarlyCertainTonalities to valid,
             )
         }
         if (diff.minUncertaintyForInvalidAnalysisResult != null) {
             val valid = diff.minUncertaintyForInvalidAnalysisResult.isValidInt(0, 11)
             result = result.copy(
                 minUncertaintyForInvalidAnalysisResult =
-                diff.minUncertaintyForInvalidAnalysisResult to valid
+                diff.minUncertaintyForInvalidAnalysisResult to valid,
             )
         }
         if (diff.minScoreForBarBelongingToPassage != null) {
@@ -525,7 +525,7 @@ data class ConfigState(
         minBarCountForPassageAutoDivision = minBarCountForPassageAutoDivision.first.toInt(),
         keyShiftForLowerThirdHarmony = keyShiftForLowerThirdHarmony,
         keyShiftForUpperThirdHarmony = keyShiftForUpperThirdHarmony,
-        validSolfegeSyllablesInOctave = (0..11).filter(validSolfegeSyllablesInOctave::get).toSet()
+        validSolfegeSyllablesInOctave = (0..11).filter(validSolfegeSyllablesInOctave::get).toSet(),
     )
 
     companion object {
@@ -539,7 +539,7 @@ data class ConfigState(
             minBarCountForPassageAutoDivision = config.minBarCountForPassageAutoDivision.toString() to true,
             keyShiftForUpperThirdHarmony = config.keyShiftForUpperThirdHarmony,
             keyShiftForLowerThirdHarmony = config.keyShiftForLowerThirdHarmony,
-            validSolfegeSyllablesInOctave = getValidSolfegeSyllablesInOctave(config.validSolfegeSyllablesInOctave)
+            validSolfegeSyllablesInOctave = getValidSolfegeSyllablesInOctave(config.validSolfegeSyllablesInOctave),
         )
 
         fun getValidSolfegeSyllablesInOctave(rawValue: Set<Int>) = List(Solfege.values().size, rawValue::contains)
