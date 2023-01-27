@@ -1,0 +1,65 @@
+name: deploy
+
+on:
+    push:
+        branches: [ main, dev ]
+
+concurrency:
+    group: "pages"
+    cancel-in-progress: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v2.3.1
+                with:
+                    ref: main
+
+            -   name: Set up JDK 11
+                uses: actions/setup-java@v1
+                with:
+                    java-version: 11
+
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
+
+            -   name: Build main branch
+                run: ./gradlew build
+
+            -   name: Check out dev branch
+                uses: actions/checkout@v2.3.1
+                with:
+                    ref: dev
+                    path: beta
+                    clean: false
+
+            -   name: Build dev branch
+                run: |
+                    cd beta
+                    ./gradlew build
+                    mkdir ../build/distributions/beta
+                    cp -r build/distributions/* ../build/distributions/beta
+
+            -   name: Upload artifact
+                uses: actions/upload-pages-artifact@v1
+                with:
+                    path: './build/distributions'
+
+    deploy:
+        needs: build
+
+        permissions:
+            pages: write
+            id-token: write
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Deploy to GitHub Pages
+                id: deployment
+                uses: actions/deploy-pages@v1
