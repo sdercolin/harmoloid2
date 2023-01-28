@@ -14,6 +14,7 @@ and [React](https://github.com/facebook/react).
 - UTAU project (.ust)
 - CeVIO project (.ccs)
 - Synthesizer V Studio project (.svp)
+- OpenUtau project (.ustx)
 
 ## Project structure
 
