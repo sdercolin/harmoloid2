@@ -68,7 +68,7 @@ val App = FC<Props> {
 
     fun pushPage(page: Page) {
         val stack = pageStack.toMutableList()
-        if (pageStack.last() == page) {
+        if (pageStack.last() == page || (pageStack.last() is Page.ExtraPage && page is Page.ExtraPage)) {
             stack.removeAt(stack.lastIndex)
         }
         stack.add(page)
@@ -101,6 +101,7 @@ val App = FC<Props> {
                     buildAppBar(
                         onChangeLanguage = { language = it },
                         onOpenConfigEditor = { isShowingConfigEditorDialog = true },
+                        onOpenExtraPage = { pushPage(Page.ExtraPage(it)) },
                     )
                     buildBody(
                         handler = handler,
@@ -119,7 +120,9 @@ val App = FC<Props> {
                     )
                 }
             }
-            CustomFooter {}
+            CustomFooter {
+                onOpenEmbeddedPage = { urlKey -> pushPage(Page.ExtraPage(urlKey)) }
+            }
             buildFabs(
                 pageStack = pageStack,
                 isReady = project?.content?.isReady ?: false,
@@ -142,7 +145,11 @@ val App = FC<Props> {
     }
 }
 
-private fun ChildrenBuilder.buildAppBar(onChangeLanguage: (Language) -> Unit, onOpenConfigEditor: () -> Unit) {
+private fun ChildrenBuilder.buildAppBar(
+    onChangeLanguage: (Language) -> Unit,
+    onOpenConfigEditor: () -> Unit,
+    onOpenExtraPage: (Strings) -> Unit,
+) {
     AppBar {
         position = AppBarPosition.fixed
         style = jso {
@@ -166,11 +173,11 @@ private fun ChildrenBuilder.buildAppBar(onChangeLanguage: (Language) -> Unit, on
                 sx { flexGrow = number(1.0) }
             }
             Tooltip {
-                title = ReactNode(string(Strings.FrequentlyAskedQuestionTooltip))
+                title = ReactNode(string(Strings.UserGuideTooltip))
                 disableInteractive = true
                 Button {
                     color = ButtonColor.inherit
-                    onClick = { window.open(string(Strings.FaqUrl), target = "_blank") }
+                    onClick = { onOpenExtraPage(Strings.UserGuideUrl) }
                     LiveHelp()
                 }
             }
@@ -215,28 +222,23 @@ private fun ChildrenBuilder.buildBody(
             margin = Margin(horizontal = 24.px, vertical = 0.px)
         }
         when (page) {
-            is Page.Import -> {
-                Importer {
-                    formats = Format.values().toList()
-                    this.onImported = onImported
-                }
+            is Page.Import -> Importer {
+                formats = Format.values().toList()
+                this.onImported = onImported
             }
-
-            is Page.Main -> {
-                MainProcessor {
-                    onUpdateProject = setProject
-                    this.handler = handler
-                    this.onFinish = onFinish
-                    this.project = requireNotNull(project)
-                    this.config = config
-                }
+            is Page.Main -> MainProcessor {
+                onUpdateProject = setProject
+                this.handler = handler
+                this.onFinish = onFinish
+                this.project = requireNotNull(project)
+                this.config = config
             }
-
-            is Page.Export -> {
-                Exporter {
-                    result = page.result
-                    onRestart = { restart() }
-                }
+            is Page.Export -> Exporter {
+                result = page.result
+                onRestart = { restart() }
+            }
+            is Page.ExtraPage -> EmbeddedPage {
+                url = string(page.urlKey)
             }
         }
     }

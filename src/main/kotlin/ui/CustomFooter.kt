@@ -12,9 +12,8 @@ import react.Props
 import react.dom.html.AnchorTarget
 import react.dom.html.ReactHTML
 import ui.strings.Strings
-import ui.strings.string
 
-val CustomFooter = FC<Props> {
+val CustomFooter = FC<CustomFooterProps> { props ->
     ReactHTML.footer {
         Typography {
             align = TypographyAlign.center
@@ -42,12 +41,9 @@ val CustomFooter = FC<Props> {
             Link {
                 color = NamedColor.grey
                 underline = LinkUnderline.hover
-                href = string(Strings.ReleaseNotesUrl)
-                target = AnchorTarget._blank
+                onClick = { props.onOpenEmbeddedPage(Strings.ReleaseNotesUrl) }
                 +"Release Notes"
             }
-            // TODO: About Usage of Google Analytics
-            /*
             +"　|　"
             Link {
                 color = NamedColor.grey
@@ -55,7 +51,10 @@ val CustomFooter = FC<Props> {
                 onClick = { props.onOpenEmbeddedPage(Strings.GoogleAnalyticsUsageInfoUrl) }
                 +"About Usage of Google Analytics"
             }
-             */
         }
     }
+}
+
+external interface CustomFooterProps : Props {
+    var onOpenEmbeddedPage: (urlKey: Strings) -> Unit
 }

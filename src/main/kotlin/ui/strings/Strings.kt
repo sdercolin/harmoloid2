@@ -15,10 +15,10 @@ enum class Strings(val en: String, val ja: String, val zhCN: String) {
         ja = "フィードバックを送信",
         zhCN = "提交反馈",
     ),
-    FrequentlyAskedQuestionTooltip(
-        en = "Frequently Asked Questions",
-        ja = "よくある質問",
-        zhCN = "常见问题解答",
+    UserGuideTooltip(
+        en = "User guide",
+        ja = "ユーザーガイド",
+        zhCN = "用户指南",
     ),
     ConfigTooltip(
         en = "Settings",
@@ -92,15 +92,20 @@ enum class Strings(val en: String, val ja: String, val zhCN: String) {
         ja = "https://gist.github.com/sdercolin/57ea4642a2acf504d046b89b1a958d3d",
         zhCN = "https://gist.github.com/sdercolin/5e5983dc490fc4060ad4d4c881992b67",
     ),
-    FaqUrl(
-        en = "https://gist.github.com/sdercolin/24aa542629d8865bd29633c1b06b82be",
-        ja = "https://gist.github.com/sdercolin/4eba1351ca1724f4fb7283c431b8249a",
-        zhCN = "https://gist.github.com/sdercolin/4f0af177ea1ce0ed71f4645ae692473e",
+    UserGuideUrl(
+        en = "https://gist.githubusercontent.com/sdercolin/24aa542629d8865bd29633c1b06b82be/raw",
+        ja = "https://gist.githubusercontent.com/sdercolin/4eba1351ca1724f4fb7283c431b8249a/raw",
+        zhCN = "https://gist.githubusercontent.com/sdercolin/4f0af177ea1ce0ed71f4645ae692473e/raw",
     ),
     ReleaseNotesUrl(
-        en = "https://gist.github.com/sdercolin/37739870bc6430852861c2ff0126afff",
-        ja = "https://gist.github.com/sdercolin/37739870bc6430852861c2ff0126afff",
-        zhCN = "https://gist.github.com/sdercolin/37739870bc6430852861c2ff0126afff",
+        en = "https://gist.githubusercontent.com/sdercolin/37739870bc6430852861c2ff0126afff/raw",
+        ja = "https://gist.githubusercontent.com/sdercolin/37739870bc6430852861c2ff0126afff/raw",
+        zhCN = "https://gist.githubusercontent.com/sdercolin/37739870bc6430852861c2ff0126afff/raw",
+    ),
+    GoogleAnalyticsUsageInfoUrl(
+        en = "https://gist.githubusercontent.com/sdercolin/b5d4cf81434ea381d8836e0015681029/raw",
+        ja = "https://gist.githubusercontent.com/sdercolin/b5d4cf81434ea381d8836e0015681029/raw",
+        zhCN = "https://gist.githubusercontent.com/sdercolin/b5d4cf81434ea381d8836e0015681029/raw",
     ),
     ExportButton(
         en = "Export",
