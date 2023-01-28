@@ -117,7 +117,7 @@ object Vpr {
         trackElements = trackElements.zip(project.content.tracks).fold(trackElements) { accumulator, item ->
             val (trackElement, trackModel) = item
             val trackChorus = project.chorus[project.content.tracks.indexOf(trackModel)]
-            val newTrackElements = trackElement.mapTrackElementsWithGroups(trackModel, trackChorus)
+            val newTrackElements = trackElement.mapTrackElements(trackModel, trackChorus)
             val index = accumulator.indexOf(trackElement)
             val result = accumulator.toMutableList()
             result.addAll(index + 1, newTrackElements)
@@ -131,7 +131,7 @@ object Vpr {
             .toString()
     }
 
-    private fun JsonElement.mapTrackElementsWithGroups(
+    private fun JsonElement.mapTrackElements(
         trackModel: Track,
         trackChorus: Map<HarmonicType, List<NoteShift>>,
     ): List<JsonElement> {

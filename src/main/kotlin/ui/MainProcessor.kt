@@ -53,7 +53,7 @@ import react.Props
 import react.ReactNode
 import react.create
 import react.dom.html.ReactHTML.div
-import react.useEffect
+import react.useEffectOnce
 import react.useState
 import ui.TrackCardState.Expanded
 import ui.common.DialogErrorState
@@ -92,37 +92,33 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
         dialogError = dialogError.copy(isShowing = false)
     }
 
-    val nullableCore: Core? by useState {
-        try {
+    var nullableCore: Core? by useState(null)
+    var trackCards: List<TrackCardState> by useState(emptyList())
+
+    useEffectOnce {
+        val core = try {
             Core(props.project.content, props.config)
                 .also { console.log("core is initialized with config: ${it.config}") }
         } catch (t: Throwable) {
             showErrorDialog(string(Strings.ImportErrorDialogTitle), t)
             null
         }
-    }
-
-    var trackCards: List<TrackCardState> by useState(emptyList())
-
-    useEffect(nullableCore) {
-        nullableCore?.let {
-            trackCards = it.content.tracks.mapIndexed { index, track ->
+        if (core != null) {
+            trackCards = core.content.tracks.mapIndexed { index, track ->
                 val expanded = if (index == 0) Expanded.MarkTonality
                 else Expanded.None
                 TrackCardState(index, track, mapOf(), mapOf(), expanded)
             }
+            props.handler.bind(
+                core = core,
+                onShowingProgress = { isProcessing = it },
+                onShowingError = ::showErrorDialog,
+                scope = scope,
+                onFinish = props.onFinish,
+                project = props.project,
+            )
+            nullableCore = core
         }
-    }
-
-    nullableCore?.let { core ->
-        props.handler.bind(
-            core = core,
-            onShowingProgress = { isProcessing = it },
-            onShowingError = ::showErrorDialog,
-            scope = scope,
-            onFinish = props.onFinish,
-            project = props.project,
-        )
     }
 
     fun toggleCollapse(trackIndex: Int, requestedExpanded: Expanded) {

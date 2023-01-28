@@ -67,5 +67,16 @@ enum class Format(
         generator = {
             io.Svp.generate(it)
         },
-    );
+    ),
+    Ustx(
+        ".ustx",
+        multipleFile = false,
+        parser = {
+            io.Ustx.parse(it.first())
+        },
+        generator = {
+            io.Ustx.generate(it)
+        },
+    ),
+    ;
 }

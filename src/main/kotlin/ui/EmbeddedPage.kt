@@ -7,7 +7,7 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.launch
 import react.Props
 import react.dom.html.ReactHTML.div
-import react.useEffect
+import react.useEffectOnce
 import react.useState
 import ui.common.scopedFC
 import ui.external.react.Markdown
@@ -17,7 +17,7 @@ val EmbeddedPage = scopedFC<EmbeddedPageProps> { props, scope ->
     var url: String? by useState { props.url }
     var content: String? by useState()
 
-    useEffect {
+    useEffectOnce {
         scope.launch {
             if (content == null || url != props.url) {
                 url = props.url

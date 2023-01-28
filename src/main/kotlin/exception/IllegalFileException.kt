@@ -13,4 +13,7 @@ sealed class IllegalFileException(message: String) : Throwable(message) {
         IllegalFileException(
             "The required attribute \"$attribute\" in element <$elementName> is missing or has in illegal value.",
         )
+
+    class JsonElementNotFound(name: String) :
+        IllegalFileException("The required element \"$name\" is not found in the json object.")
 }
