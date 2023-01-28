@@ -2,116 +2,90 @@ package ui
 
 import com.sdercolin.harmoloid.core.Core
 import com.sdercolin.harmoloid.core.exception.NoteOverlappingException
+import csstype.px
+import emotion.react.css
 import kotlinx.coroutines.delay
-import kotlinx.css.LinearDimension
-import kotlinx.css.marginTop
-import kotlinx.html.js.onClickFunction
+import kotlinx.coroutines.launch
 import model.Format
 import model.Project
+import mui.material.AlertColor
+import mui.material.Typography
+import mui.material.styles.TypographyVariant
 import org.w3c.files.File
+import react.ChildrenBuilder
 import react.Props
-import react.RBuilder
-import react.State
-import react.dom.attrs
-import react.setState
-import styled.css
-import styled.styledDiv
-import ui.external.materialui.Severity
-import ui.external.materialui.TypographyVariant
-import ui.external.materialui.typography
-import ui.external.react.fileDrop
+import react.dom.html.ReactHTML.div
+import react.useState
+import ui.common.DialogErrorState
+import ui.common.SnackbarErrorState
+import ui.common.errorDialog
+import ui.common.messageBar
+import ui.common.progress
+import ui.common.scopedFC
+import ui.external.react.FileDrop
 import ui.strings.Strings
 import ui.strings.string
 import util.extensionName
+import util.runCatchingCancellable
 import util.toList
 import util.waitFileSelection
 
-class Importer : CoroutineRComponent<ImporterProps, ImporterState>() {
+val Importer = scopedFC<ImporterProps> { props, scope ->
+    var isLoading by useState(false)
+    var snackbarError by useState(SnackbarErrorState())
+    var dialogError by useState(DialogErrorState())
 
-    override fun ImporterState.init() {
-        isLoading = false
-        snackbarError = SnackbarErrorState()
-        dialogError = DialogErrorState()
+    fun getFileFormat(files: List<File>): Format? {
+        val extensions = files.map { it.extensionName }.distinct()
+
+        return if (extensions.count() > 1) null
+        else props.formats.find { it.extension == ".${extensions.first()}" }
     }
 
-    override fun RBuilder.render() {
-        styledDiv {
-            css {
-                marginTop = LinearDimension("40px")
-            }
-            attrs {
-                onClickFunction = {
-                    launch {
-                        val accept = props.formats.joinToString(",") { it.extension }
-                        val files = waitFileSelection(accept = accept, multiple = true)
-                        checkFilesToImport(files)
-                    }
-                }
-            }
-            buildFileDrop()
-        }
-
-        messageBar(
-            open = state.snackbarError.open,
-            message = state.snackbarError.message,
-            onClose = { closeMessageBar() },
-            severityString = Severity.error
-        )
-
-        errorDialog(
-            isShowing = state.dialogError.open,
-            title = state.dialogError.title,
-            errorMessage = state.dialogError.message,
-            close = { closeErrorDialog() }
-        )
-
-        if (state.isLoading) {
-            progress()
-        }
-    }
-
-    private fun RBuilder.buildFileDrop() {
-        fileDrop {
-            attrs {
-                onDrop = { files, _ ->
-                    checkFilesToImport(files.toList())
-                }
-            }
-            typography {
-                attrs {
-                    variant = TypographyVariant.h5
-                }
-                +(string(Strings.ImportFileDescription))
-            }
-            styledDiv {
-                css {
-                    marginTop = LinearDimension("5px")
-                }
-                typography {
-                    attrs {
-                        variant = TypographyVariant.body2
-                    }
-                    +(string(Strings.ImportFileSubDescription))
+    fun import(files: List<File>, format: Format) {
+        isLoading = true
+        scope.launch {
+            runCatchingCancellable {
+                delay(100)
+                val parseFunction = format.parser
+                val project = parseFunction(files)
+                Core(project.content)
+                console.log("Project was imported successfully.")
+                props.onImported.invoke(project)
+            }.onFailure { t ->
+                console.log(t)
+                isLoading = false
+                if (t is NoteOverlappingException) {
+                    snackbarError = SnackbarErrorState(
+                        true,
+                        string(
+                            Strings.NoteOverlappingImportError,
+                            "trackNumber" to (t.trackIndex + 1).toString(),
+                            "notesDescription" to t.notes.toString(),
+                        ),
+                    )
+                } else {
+                    dialogError = DialogErrorState(
+                        isShowing = true,
+                        title = string(Strings.ImportErrorDialogTitle),
+                        message = t.message ?: t.toString(),
+                    )
                 }
             }
         }
     }
 
-    private fun checkFilesToImport(files: List<File>) {
+    fun checkFilesToImport(files: List<File>) {
         val fileFormat = getFileFormat(files)
         when {
             fileFormat == null -> {
-                setState {
-                    snackbarError = SnackbarErrorState(true, string(Strings.UnsupportedFileTypeImportError))
-                }
+                snackbarError = SnackbarErrorState(true, string(Strings.UnsupportedFileTypeImportError))
             }
             !fileFormat.multipleFile && files.count() > 1 -> {
-                setState {
-                    snackbarError = SnackbarErrorState(
-                        true,
-                        string(Strings.MultipleFileImportError, "format" to fileFormat.name)
-                    )
-                }
+                snackbarError = SnackbarErrorState(
+                    true,
+                    string(Strings.MultipleFileImportError, "format" to fileFormat.name),
+                )
             }
             else -> {
                 import(files, fileFormat)
@@ -119,60 +93,60 @@ class Importer : CoroutineRComponent<ImporterProps, ImporterState>() {
         }
     }
 
-    private fun import(files: List<File>, format: Format) {
-        setState {
-            isLoading = true
+    fun closeMessageBar() {
+        snackbarError = snackbarError.copy(isShowing = false)
+    }
+
+    fun closeErrorDialog() {
+        dialogError = dialogError.copy(isShowing = false)
+    }
+
+    div {
+        css {
+            marginTop = 40.px
         }
-        launch {
-            try {
-                delay(100)
-                val parseFunction = format.parser
-                val project = parseFunction(files)
-                Core(project.content)
-                console.log("Project was imported successfully.")
-                console.log(project)
-                props.onImported.invoke(project)
-            } catch (t: Throwable) {
-                console.log(t)
-                setState {
-                    isLoading = false
-                    if (t is NoteOverlappingException) {
-                        snackbarError = SnackbarErrorState(
-                            true,
-                            string(
-                                Strings.NoteOverlappingImportError,
-                                "trackNumber" to (t.trackIndex + 1).toString(),
-                                "notesDescription" to t.notes.toString()
-                            )
-                        )
-                    } else {
-                        dialogError = DialogErrorState(
-                            open = true,
-                            title = string(Strings.ImportErrorDialogTitle),
-                            message = t.message ?: t.toString()
-                        )
-                    }
-                }
+        onClick = {
+            scope.launch {
+                val accept = props.formats.joinToString(",") { it.extension }
+                val files = waitFileSelection(accept = accept, multiple = true)
+                checkFilesToImport(files)
             }
         }
+        buildFileDrop { checkFilesToImport(it) }
     }
 
-    private fun getFileFormat(files: List<File>): Format? {
-        val extensions = files.map { it.extensionName }.distinct()
+    messageBar(
+        isShowing = snackbarError.isShowing,
+        message = snackbarError.message,
+        close = { closeMessageBar() },
+        color = AlertColor.error,
+    )
 
-        return if (extensions.count() > 1) null
-        else props.formats.find { it.extension == ".${extensions.first()}" }
-    }
+    errorDialog(
+        state = dialogError,
+        close = { closeErrorDialog() },
+    )
 
-    private fun closeMessageBar() {
-        setState {
-            snackbarError = snackbarError.copy(open = false)
+    progress(isLoading)
+}
+
+private fun ChildrenBuilder.buildFileDrop(onFiles: (List<File>) -> Unit) {
+    FileDrop {
+        onDrop = { files, _ ->
+            onFiles(files.toList())
         }
-    }
-
-    private fun closeErrorDialog() {
-        setState {
-            dialogError = dialogError.copy(open = false)
+        Typography {
+            variant = TypographyVariant.h5
+            +string(Strings.ImportFileDescription)
+        }
+        div {
+            css {
+                marginTop = 5.px
+            }
+            Typography {
+                variant = TypographyVariant.body2
+                +string(Strings.ImportFileSubDescription)
+            }
         }
     }
 }
@@ -180,10 +154,4 @@ class Importer : CoroutineRComponent<ImporterProps, ImporterState>() {
 external interface ImporterProps : Props {
     var formats: List<Format>
     var onImported: (Project) -> Unit
-}
-
-external interface ImporterState : State {
-    var isLoading: Boolean
-    var snackbarError: SnackbarErrorState
-    var dialogError: DialogErrorState
 }

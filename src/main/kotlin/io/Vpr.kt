@@ -29,7 +29,7 @@ import util.readBinary
 import util.withProperty
 
 object Vpr {
-    suspend fun parse(file: File): model.Project {
+    suspend fun parse(file: File): Project {
         val text = readContent(file)
         val projectElement = jsonSerializer.parseToJsonElement(text)
         val timeSignatures = projectElement
@@ -41,18 +41,18 @@ object Vpr {
                 TimeSignature(
                     measurePosition = it.property("bar").asInt,
                     numerator = it.property("numer").asInt,
-                    denominator = it.property("denom").asInt
+                    denominator = it.property("denom").asInt,
                 )
             }
             ?.takeIf { it.isNotEmpty() }
             ?: listOf(TimeSignature.default)
 
         val tracks = parseTracks(projectElement, timeSignatures)
-        return model.Project(
+        return Project(
             format = Format.Vpr,
             inputFiles = listOf(file),
             name = file.nameWithoutExtension,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
@@ -71,14 +71,14 @@ object Vpr {
 
     private fun parseTracks(
         projectElement: JsonElement,
-        timeSignatures: List<TimeSignature>
+        timeSignatures: List<TimeSignature>,
     ): List<Track> = projectElement.property("tracks").asList
         .mapIndexed { index, track ->
             Track.build(
                 index,
                 name = track.maybeProperty("name")?.asString ?: "Track ${index + 1}",
                 notes = parseNotes(track),
-                timeSignatures
+                timeSignatures,
             )
         }
 
@@ -93,7 +93,7 @@ object Vpr {
                     tickOn = tickOffset + note.property("pos").asLong,
                     tickOff = tickOffset + note.property("pos").asLong + note.property("duration").asLong,
                     lyric = note.property("lyric").asStringOrNull.takeUnless { it.isNullOrBlank() } ?: "",
-                    key = note.property("number").asInt
+                    key = note.property("number").asInt,
                 )
             }
 
@@ -117,7 +117,7 @@ object Vpr {
         trackElements = trackElements.zip(project.content.tracks).fold(trackElements) { accumulator, item ->
             val (trackElement, trackModel) = item
             val trackChorus = project.chorus[project.content.tracks.indexOf(trackModel)]
-            val newTrackElements = trackElement.mapTrackElementsWithGroups(trackModel, trackChorus)
+            val newTrackElements = trackElement.mapTrackElements(trackModel, trackChorus)
             val index = accumulator.indexOf(trackElement)
             val result = accumulator.toMutableList()
             result.addAll(index + 1, newTrackElements)
@@ -131,16 +131,16 @@ object Vpr {
             .toString()
     }
 
-    private fun JsonElement.mapTrackElementsWithGroups(
+    private fun JsonElement.mapTrackElements(
         trackModel: Track,
-        trackChorus: Map<HarmonicType, List<NoteShift>>
+        trackChorus: Map<HarmonicType, List<NoteShift>>,
     ): List<JsonElement> {
         if (trackModel.bars.isEmpty()) return listOf()
         if (trackChorus.isEmpty()) return listOf()
         return trackChorus.map { (harmony, noteShifts) ->
             var newTrackElement = withProperty(
                 "name",
-                harmony.getHarmonicTrackName(trackModel.name)
+                harmony.getHarmonicTrackName(trackModel.name),
             )
 
             // Collect all notes with index
@@ -149,7 +149,7 @@ object Vpr {
                 ?.flatMap { it.maybeProperty("notes")?.asList.orEmpty() }
                 ?.forEachIndexed { index, note -> noteIndexMap[note] = index }
 
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
 
             newTrackElement = newTrackElement.mapProperty("parts") { partsElement ->
                 partsElement.asList.map { partElement ->
@@ -169,7 +169,7 @@ object Vpr {
 
     private val possibleJsonPaths = listOf(
         "Project\\sequence.json",
-        "Project/sequence.json"
+        "Project/sequence.json",
     )
 
     private val jsonSerializer = Json {

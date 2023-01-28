@@ -66,7 +66,7 @@ object Ccs {
                 it.index,
                 it.name,
                 it.notes,
-                timeSignatures
+                timeSignatures,
             )
         }
 
@@ -74,12 +74,12 @@ object Ccs {
             format = Format.Ccs,
             inputFiles = listOf(file),
             name = projectName,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
     private fun mergeTimeSignatures(
-        results: List<TrackParseResult>
+        results: List<TrackParseResult>,
     ): List<TimeSignature> {
         return results.firstOrNull { it.timeSignatures.isNotEmpty() }
             ?.timeSignatures.let { it ?: listOf(TimeSignature.default) }
@@ -108,7 +108,7 @@ object Ccs {
             .mapIndexed { noteIndex, element ->
                 val tickOn = (element.getRequiredAttributeAsLong("Clock") / TICK_RATE).toLong()
                 val tickOff = tickOn +
-                        (element.getRequiredAttributeAsLong("Duration") / TICK_RATE).toLong()
+                    (element.getRequiredAttributeAsLong("Duration") / TICK_RATE).toLong()
                 val pitchStep = element.getRequiredAttributeAsInteger("PitchStep")
                 val pitchOctave = element.getRequiredAttributeAsInteger("PitchOctave") - OCTAVE_OFFSET
                 val key = pitchStep + pitchOctave * KEY_IN_OCTAVE
@@ -123,7 +123,7 @@ object Ccs {
         val index: Int,
         val name: String,
         val notes: List<Note>,
-        val timeSignatures: List<TimeSignature>
+        val timeSignatures: List<TimeSignature>,
     )
 
     suspend fun generate(project: Project): ExportResult {
@@ -191,9 +191,9 @@ object Ccs {
 
     private fun applyNoteShiftsToTrackNode(
         unitNode: Element,
-        noteShifts: List<NoteShift>
+        noteShifts: List<NoteShift>,
     ) {
-        val noteShiftsMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+        val noteShiftsMap = noteShifts.associate { it.noteIndex to it.keyDelta }
         unitNode.getSingleElementByTagName("Song")
             .getSingleElementByTagName("Score")
             .getElementListByTagName("Note")

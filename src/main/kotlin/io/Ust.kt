@@ -28,23 +28,21 @@ object Ust {
         val results = files.map {
             parseFile(it)
         }
-        val projectName = results
-            .mapNotNull { it.projectName }
-            .firstOrNull()
+        val projectName = results.firstNotNullOfOrNull { it.projectName }
             ?: files.first().nameWithoutExtension
         val tracks = results.mapIndexed { index, result ->
             Track.build(
                 index,
                 name = result.file.nameWithoutExtension,
                 result.notes,
-                timeSignatures = listOf(TimeSignature.default)
+                timeSignatures = listOf(TimeSignature.default),
             )
         }
         return Project(
             format = Format.Ust,
             inputFiles = files,
             name = projectName,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
@@ -83,8 +81,8 @@ object Ust {
                             key = pendingNoteKey,
                             lyric = pendingNoteLyric,
                             tickOn = pendingNoteTickOn,
-                            tickOff = pendingNoteTickOff
-                        )
+                            tickOff = pendingNoteTickOff,
+                        ),
                     )
                 }
                 pendingNoteKey = null
@@ -133,7 +131,7 @@ object Ust {
     private fun generateTrackContentsWithNames(
         originalContent: String,
         track: Track,
-        trackChorus: Map<HarmonicType, List<NoteShift>>
+        trackChorus: Map<HarmonicType, List<NoteShift>>,
     ): List<Pair<String, String>> {
         val result = mutableListOf<Pair<String, String>>()
         if (trackChorus.isEmpty() || track.notes.isEmpty()) return result
@@ -151,7 +149,7 @@ object Ust {
 
         for ((harmony, noteShifts) in trackChorus) {
             val harmonyTrackName = harmony.getHarmonicTrackName(track.name)
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
             val sectionContents = originalSections
                 .map { it.second }
                 .mapIndexed { index, section ->
@@ -195,7 +193,7 @@ object Ust {
     private data class FileParseResult(
         val file: File,
         val projectName: String?,
-        val notes: List<Note>
+        val notes: List<Note>,
     )
 
     private const val LINE_SEPARATOR = "\r\n"

@@ -1,5 +1,8 @@
+@file:Suppress("unused")
+
 package util
 
+import exception.IllegalFileException
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -17,8 +20,15 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import kotlinx.serialization.json.longOrNull
 
-fun JsonElement.property(name: String) = maybeProperty(name)!!
+fun JsonElement.property(name: String) = maybeProperty(name)
+    ?: throw IllegalFileException.JsonElementNotFound(name)
+
 fun JsonElement.maybeProperty(name: String) = jsonObject[name]
+
+fun JsonElement.clone(): JsonObject {
+    val content = jsonObject.toMutableMap()
+    return JsonObject(content)
+}
 
 fun JsonElement.withProperty(name: String, value: Any?): JsonObject {
     val content = jsonObject.toMutableMap()
@@ -43,7 +53,7 @@ fun Any?.json(): JsonElement =
         is Boolean -> this.json()
         is String -> this.json()
         else -> throw NotImplementedError(
-            "${this::class.simpleName ?: this.toString()}.json() is not implemented."
+            "${this::class.simpleName ?: this.toString()}.json() is not implemented.",
         )
     }
 

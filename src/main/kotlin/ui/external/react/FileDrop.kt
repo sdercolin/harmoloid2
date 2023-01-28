@@ -9,7 +9,7 @@ import react.ComponentClass
 import react.Props
 
 @JsName("FileDrop")
-external val fileDrop: ComponentClass<FileDropProps>
+external val FileDrop: ComponentClass<FileDropProps>
 
 external interface FileDropProps : Props {
     var onDrop: (FileList, Event) -> Unit

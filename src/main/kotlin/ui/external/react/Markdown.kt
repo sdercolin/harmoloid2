@@ -5,4 +5,4 @@ import react.Props
 
 @JsModule("react-markdown")
 @JsNonModule
-external val markdown: ComponentClass<Props>
+external val Markdown: ComponentClass<Props>

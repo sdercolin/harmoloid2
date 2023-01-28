@@ -4,9 +4,10 @@ import com.sdercolin.harmoloid.core.model.DEFAULT_METER_HIGH
 import com.sdercolin.harmoloid.core.model.DEFAULT_METER_LOW
 import com.sdercolin.harmoloid.core.model.TICKS_IN_FULL_NOTE
 
+@Suppress("MemberVisibilityCanBePrivate")
 class TickCounter(
     private val tickRate: Double = 1.0,
-    private val ticksInFullNote: Long = TICKS_IN_FULL_NOTE.toLong()
+    private val ticksInFullNote: Long = TICKS_IN_FULL_NOTE.toLong(),
 ) {
 
     var tick = 0L

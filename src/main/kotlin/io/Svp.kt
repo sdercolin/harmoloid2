@@ -41,7 +41,7 @@ object Svp {
                 TimeSignature(
                     measurePosition = it.property("index").asInt,
                     numerator = it.property("numerator").asInt,
-                    denominator = it.property("denominator").asInt
+                    denominator = it.property("denominator").asInt,
                 )
             }
             ?.takeIf { it.isNotEmpty() }
@@ -52,7 +52,7 @@ object Svp {
             format = Format.Svp,
             inputFiles = listOf(file),
             name = file.nameWithoutExtension,
-            content = Content(tracks)
+            content = Content(tracks),
         )
     }
 
@@ -63,7 +63,7 @@ object Svp {
 
     private fun parseTracks(
         projectElement: JsonElement,
-        timeSignatures: List<TimeSignature>
+        timeSignatures: List<TimeSignature>,
     ): List<Track> = projectElement.property("tracks").asList
         .sortedBy { it.maybeProperty("dispOrder")?.asIntOrNull ?: 0 }
         .mapIndexed { index, track ->
@@ -71,7 +71,7 @@ object Svp {
                 index,
                 name = track.maybeProperty("name")?.asString ?: "Track ${index + 1}",
                 notes = parseNotes(track, projectElement),
-                timeSignatures
+                timeSignatures,
             )
         }
 
@@ -92,15 +92,17 @@ object Svp {
 
     private fun parseNotesFromGroup(refElement: JsonElement, groupElement: JsonElement): List<Note> =
         groupElement.property("notes").asList.map { note ->
-            val tickOn = (note.property("onset").asLong +
-                    (refElement.maybeProperty("blickOffset")?.asLongOrNull ?: 0L)) / TICK_RATE
+            val tickOn = (
+                note.property("onset").asLong +
+                    (refElement.maybeProperty("blickOffset")?.asLongOrNull ?: 0L)
+                ) / TICK_RATE
             Note(
                 index = 0, // will be set later
                 key = note.property("pitch").asInt +
-                        (refElement.maybeProperty("pitchOffset")?.asIntOrNull ?: 0),
+                    (refElement.maybeProperty("pitchOffset")?.asIntOrNull ?: 0),
                 tickOn = tickOn,
                 tickOff = tickOn + note.property("duration").asLong / TICK_RATE,
-                lyric = note.maybeProperty("lyrics")?.asStringOrNull ?: ""
+                lyric = note.maybeProperty("lyrics")?.asStringOrNull ?: "",
             )
         }
 
@@ -143,14 +145,14 @@ object Svp {
     private fun JsonElement.mapTrackElementsWithGroups(
         trackModel: Track,
         trackChorus: Map<HarmonicType, List<NoteShift>>,
-        projectElement: JsonElement
+        projectElement: JsonElement,
     ): List<Pair<JsonElement, List<JsonElement>>> {
         if (trackModel.bars.isEmpty()) return listOf()
         if (trackChorus.isEmpty()) return listOf()
         return trackChorus.map { (harmony, noteShifts) ->
             var newTrackElement = withProperty(
                 "name",
-                harmony.getHarmonicTrackName(trackModel.name)
+                harmony.getHarmonicTrackName(trackModel.name),
             )
 
             // Collect all notes with index
@@ -161,12 +163,12 @@ object Svp {
                         .mapNotNull { refElement ->
                             projectElement.findGroupElement(refElement)
                         }
-                        .flatMap { it.property("notes").asList }
+                        .flatMap { it.property("notes").asList },
                 )
                 .sortedBy { it.property("onset").asLong }
                 .forEachIndexed { index, note -> noteIndexMap[note] = index }
 
-            val noteShiftMap = noteShifts.map { it.noteIndex to it.keyDelta }.toMap()
+            val noteShiftMap = noteShifts.associate { it.noteIndex to it.keyDelta }
 
             newTrackElement = newTrackElement.mapProperty("mainGroup") {
                 it.mapGroupWithNotes(noteShiftMap, noteIndexMap)
@@ -194,14 +196,14 @@ object Svp {
     }
 
     private fun JsonElement.findGroupElement(
-        refElement: JsonElement
+        refElement: JsonElement,
     ) = this.property("library").asList.find {
         it.property("uuid") == refElement.property("groupID")
     }
 
     private fun JsonElement.mapGroupWithNotes(
         noteShiftMap: Map<Int, Int>,
-        noteIndexMap: Map<JsonElement, Int>
+        noteIndexMap: Map<JsonElement, Int>,
     ): JsonElement {
         return this.mapProperty("notes") { notesElement ->
             notesElement.asList.mapNotNull { note ->
