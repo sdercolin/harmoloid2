@@ -137,7 +137,7 @@ val MainProcessor = scopedFC<MainProcessorProps> { props, scope ->
     val context = Context(
         core = core,
         trackCards = trackCards,
-        setTrackCards = { trackCards = it },
+        setTrackCardsToUpstream = { trackCards = it },
         showMessageBar = ::showMessageBar,
         showError = ::showErrorDialog,
         project = props.project,
@@ -756,7 +756,7 @@ private fun Context.onUpdateTrack(
         core.savePassages(trackIndex, requireNotNull(newTrack.passages))
         core.saveHarmonicTypes(trackIndex, newTrack.harmonies.orEmpty())
     }
-    onUpdateProject(project.copy(content = core.content))
+    updateProject(project.copy(content = core.content))
 }
 
 private fun TrackTonalityAnalysisResult.Failure.getMessage() = when (this) {
@@ -787,10 +787,23 @@ private data class TrackCardState(
 
 private class Context(
     val core: Core,
-    val trackCards: List<TrackCardState>,
-    val setTrackCards: (List<TrackCardState>) -> Unit,
-    val project: Project,
-    val onUpdateProject: (Project) -> Unit,
+    var trackCards: List<TrackCardState>,
+    private val setTrackCardsToUpstream: (List<TrackCardState>) -> Unit,
+    var project: Project,
+    private val onUpdateProject: (Project) -> Unit,
     val showMessageBar: (String) -> Unit,
     val showError: (String, Throwable) -> Unit,
-)
+) {
+    fun setTrackCards(newTrackCards: List<TrackCardState>) {
+        // due to delay of Context's recreation (rendering of React),
+        // we need to update trackCards manually in case of continuous call of this function
+        trackCards = newTrackCards
+        setTrackCardsToUpstream(newTrackCards)
+    }
+
+    fun updateProject(newProject: Project) {
+        // same as setTrackCards, we need to update project manually
+        project = newProject
+        onUpdateProject(newProject)
+    }
+}
