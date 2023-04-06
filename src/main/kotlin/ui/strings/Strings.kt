@@ -51,9 +51,9 @@ enum class Strings(val en: String, val ja: String, val zhCN: String) {
         zhCN = "拖放文件或点击导入",
     ),
     ImportFileSubDescription(
-        en = "Supported file types: VSQX, VPR, UST, CCS, SVP, USTX",
-        ja = "サポートされているファイル形式：VSQX、VPR、UST、CCS、SVP、USTX",
-        zhCN = "支持的文件类型：VSQX、VPR、UST、CCS、SVP、USTX",
+        en = "Supported file types: VSQX, VPR, UST, CCS, SVP, USTX, UFDATA",
+        ja = "サポートされているファイル形式：VSQX、VPR、UST、CCS、SVP、USTX、UFDATA",
+        zhCN = "支持的文件类型：VSQX、VPR、UST、CCS、SVP、USTX、UFDATA",
     ),
     UnsupportedFileTypeImportError(
         en = "Unsupported file type",

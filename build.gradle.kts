@@ -29,6 +29,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 
+    // Model
+    implementation("com.sdercolin.utaformatix:utaformatix-data:1.0.0")
+
     // React, React DOM + Wrappers
     implementation(enforcedPlatform(kotlinw("wrappers-bom:$kotlinWrappersVersion")))
     implementation(kotlinw("emotion"))

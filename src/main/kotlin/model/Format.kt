@@ -78,5 +78,15 @@ enum class Format(
             io.Ustx.generate(it)
         },
     ),
+    UfData(
+        ".ufdata",
+        multipleFile = false,
+        parser = {
+            io.UfData.parse(it.first())
+        },
+        generator = {
+            io.UfData.generate(it)
+        },
+    )
     ;
 }

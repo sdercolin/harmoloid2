@@ -15,6 +15,7 @@ and [React](https://github.com/facebook/react).
 - CeVIO project (.ccs)
 - Synthesizer V Studio project (.svp)
 - OpenUtau project (.ustx)
+- [UtaFormatix Data](https://github.com/sdercolin/utaformatix-data) (.ufdata)
 
 ## Project structure
 
