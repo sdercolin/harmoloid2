@@ -69,15 +69,14 @@ object Ustx {
     private fun parseTracks(
         projectElement: JsonElement,
         timeSignatures: List<TimeSignature>,
-    ): List<Track> = projectElement.property("tracks").asList
-        .mapIndexed { index, track ->
-            Track.build(
-                index,
-                name = "Track ${index + 1}",
-                notes = parseNotes(index, projectElement),
-                timeSignatures = timeSignatures,
-            )
-        }
+    ): List<Track> = List(projectElement.property("tracks").asList.size) { index ->
+        Track.build(
+            index,
+            name = "Track ${index + 1}",
+            notes = parseNotes(index, projectElement),
+            timeSignatures = timeSignatures,
+        )
+    }
 
     private fun parseNotes(trackIndex: Int, projectElement: JsonElement): List<Note> =
         projectElement.property("voice_parts").asList
