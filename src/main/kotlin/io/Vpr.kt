@@ -83,11 +83,12 @@ object Vpr {
         }
 
     private fun parseNotes(trackElement: JsonElement): List<Note> =
-        trackElement.property("parts").asList
-            .flatMap { partElement ->
-                partElement.property("notes").asList.map { partElement.property("pos").asLong to it }
+        trackElement.maybeProperty("parts")?.asList
+            ?.flatMap { partElement ->
+                partElement.maybeProperty("notes")?.asList?.map { partElement.property("pos").asLong to it }
+                    ?: emptyList()
             }
-            .mapIndexed { index, (tickOffset, note) ->
+            ?.mapIndexed { index, (tickOffset, note) ->
                 Note(
                     index = index,
                     tickOn = tickOffset + note.property("pos").asLong,
@@ -95,7 +96,7 @@ object Vpr {
                     lyric = note.property("lyric").asStringOrNull.takeUnless { it.isNullOrBlank() } ?: "",
                     key = note.property("number").asInt,
                 )
-            }
+            } ?: emptyList()
 
     suspend fun generate(project: Project): ExportResult {
         val jsonText = generateContent(project)
